@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"> 
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/auth_check_user.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+</head>
+<body>
+  <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+      <div id="clock_box">
+        <input type="datetime-local" id="ajuste">
+        <div id="hora"></div>
+      </div>
+      </div>
+    <div class="footer">
+      <input type="button" id="voltar" class="buttonMain" value="Voltar">
+      <input type="button" id="ajustebtn" class="buttonMain" value="Ajustar">
+      <input type="button" id="ajustebtn_auto" class="buttonMain" value="Automático">
+    </div>
+    </div>
+  
+
+
+<script>  
+$("#ajustebtn").click(function () {
+    const ajuste = document.getElementById("ajuste").value;
+    var novadata = new Date(ajuste);
+    var newTime = novadata.getTime();
+    const data = {newTime};
+    const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      };
+      const response =  fetch(server+'/clock/adjust', options);   
+});
+
+getData();
+setInterval(getData,1000);
+
+
+  async function getData() {
+  const response = await fetch(server+'/clock');
+  const data = await response.json();
+  
+  const date = new Date(data);
+  const clock = date.toLocaleDateString() + " - " + date.toLocaleTimeString()
+  
+
+ document.getElementById("hora").innerHTML = clock;
+  };
+
+  $("#ajustebtn_auto").click(function () {
+      const response =  fetch(server+'/clock/adjust/auto');   
+});
+
+$("#voltar").click(function () {
+  window.location.replace("gerenciar.html")   
+});
+
+</script>
+</body>
+</html>

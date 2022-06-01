@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+        <div id="title">
+            <h2>Retire sua entrega do compartimento:</h2>
+        </div>
+        <div id="quadro">
+            <container id="divcompAbrir">
+                <div id="textcompAbrir"></div>
+            </container>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="bottom_button">
+            <input id="encerrar" type="button" class="buttonMain" value="Encerrar">
+        </div>
+    </div>
+    </div>
+<script> 
+
+async function openComp(open){
+
+const data = {open};
+console.log(data)
+const options = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+    };
+    const response = await fetch(server+'/open', options);
+    const retorno = await response.json();
+    console.log(retorno);
+}
+
+var comp = localStorage.getItem("varCompReceber");
+
+$("#textcompAbrir").html(comp);
+
+//openComp(comp);
+
+$("#encerrar").click(function () {
+    window.location.replace("main.html");
+});
+
+createDiv();
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Iniciar Sessão</title>
+<link rel="stylesheet" type="text/css" href="css/keyboard.css">
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+</head>
+<body>
+    <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+        <div id="title">
+            <h2>Digite a chave de acesso:</h2>
+        </div>
+        <div id="text_input"> 
+            <input type="text" id="senha"><br><br>
+        </div>
+        <div id="keyboard">
+            <div class="virtual-keyboard"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="bottom_button">
+            <input id="confirmar" type="button" class="buttonMain" value="Confirmar">
+            <input id="voltar" type="button" class="buttonMain" value="Voltar">
+            <input id="teste" type="button" class="buttonMain" value="Sessões">
+    
+        </div>
+    </div>
+    </div>
+    
+    
+<script type="text/javascript" src="js/keyboard-initializer.js"></script>
+<script type="text/javascript" src="js/keyboard-handler.js"></script>
+
+<script> 
+var locker;
+getLocker()
+async function  getLocker(){
+    const response = await fetch(server+'/locker');
+    const retorno = await response.json();
+    locker = retorno[0].cod;
+    $('.content').append(`
+    <div id="title">Armário - ${locker}</div>
+    `);
+}
+$("#text_input").click(function () {
+    key_vis = true;
+    $text_input = $(this);
+    $keyboard = $text_input.next();
+    $keyboard.slideToggle(500, function () {
+    });
+});
+
+$("#confirmar").click(async function () {
+    $('#keyboard').slideToggle(500, function () {
+    });
+
+    key = $("#senha").val();
+
+    var get_ip = await fetch('https://api.ipify.org?format=json');
+    var ret = await get_ip.json();
+    var ip = ret.ip
+
+    var data = {locker,key,ip};
+    console.log(data)
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    
+   const response = await fetch(server+'/auth',options);
+   const retorno = await response.json();
+    console.log(retorno)
+   var token = retorno.token;
+   var sessionId = retorno.sessionId;
+
+   if(token && sessionId){
+       console.log("Autenticado")
+       sessionStorage.setItem("token",token);
+       sessionStorage.setItem("sessionId",sessionId);
+       $(".content").append(`
+       <div id="title">Autenticado!</div>
+       `)
+       setTimeout(()=>{
+           window.location.replace("index.html")
+       }, 3000)
+   } else {
+    console.log("Falha")
+    $(".content").append(`
+       <div id="title" class="warn">Falha na autenticação.<br>Tente novamente...</div>
+       `)
+       setTimeout(()=>{
+           $(".warn").remove();
+       }, 5000)
+   }
+
+});
+$("#voltar").click(function () {
+    window.location.replace("correio_credencial.html");
+});
+
+$("#teste").click(async function () {
+    const response = await fetch(server+'/sessions')
+    const retorno = await response.json();
+    console.log(retorno)
+});
+</script>
+</body>
+</html>

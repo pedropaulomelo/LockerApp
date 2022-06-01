@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="title">
+                <h2>Selecione o tamanho do compartimento desejado:</h2>
+            </div>
+            <div id="comp_push" class="compartimentos"></div> 
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="voltar" type="button" class="buttonMain" value="Voltar">
+                <input type="button" class="buttonMain" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Cancelar">
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    
+            <div class="offcanvas-body">
+               <h2>Está certo de que deseja cancelar esta entrega?</h2>
+              <br>
+  
+              <input id="sim" type="button" class="buttonMain" value="Sim">
+  
+            </div> 
+            </div>
+    </div>
+    
+
+<script> 
+
+var size;
+var options;
+var data;
+var response;
+var retorno;
+
+async function getComps(){
+    size = "P"
+    data = {size};
+    options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    response = await fetch(server+'/db_comp',options)
+    retorno = await response.json()
+    console.log(retorno)
+    if(retorno.length){
+        $('#comp_push').append(`
+        <div class="caixa" value="P">
+           <img src="css/caixa_p.png" id="P" onclick="clickCaixa(this.id)">
+       </div>
+        `)
+    } else {
+        $('#comp_push').append(`
+        <div class="caixa" value="P">
+           <img src="css/indisp_caixa_p.png">
+       </div>
+        `)  
+    }
+
+    size = "M"
+    data = {size};
+    options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    response = await fetch(server+'/db_comp',options)
+    retorno = await response.json()
+    console.log(retorno)
+    if(retorno.length){
+        $('#comp_push').append(`
+        <div class="caixa" value="M">
+           <img src="css/caixa_m.png" id="M" onclick="clickCaixa(this.id)">
+       </div>
+        `)
+    } else {
+        $('#comp_push').append(`
+        <div class="caixa" value="M">
+           <img src="css/indisp_caixa_m.png">
+       </div>
+        `)  
+    }
+
+
+    size = "G"
+    data = {size};
+    options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    response = await fetch(server+'/db_comp',options)
+    retorno = await response.json()
+    console.log(retorno)
+    if(retorno.length){
+        $('#comp_push').append(`
+        <div class="caixa" value="G">
+           <img src="css/caixa_g.png" id="G" onclick="clickCaixa(this.id)">
+       </div>
+        `)
+    } else {
+        $('#comp_push').append(`
+        <div class="caixa" value="G">
+           <img src="css/indisp_caixa_g.png">
+       </div>
+        `)  
+    }
+}
+
+getComps()
+
+$(".caixa").click(function () {
+    $value = $(this).attr("value");
+    var valueComp = $value;
+    localStorage.setItem("varComp", valueComp);
+    window.location.replace("entregas_conf.html");
+});
+function clickCaixa(size){
+    console.log(size)
+    localStorage.setItem("varCompSize", size);
+    window.location.replace("entregas_conf.html");  
+}
+$("#voltar").click(function () {
+    window.location.replace("entregas_ap.html");
+});
+$("#sim").click(function () {
+    window.location.replace("main.html");
+});
+
+createDiv();
+</script>
+</body>
+</html>

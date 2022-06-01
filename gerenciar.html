@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/auth_check_user.js"></script>
+</head>
+<body>
+    <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+        <div id="btns" class="btnfig">
+            <div id="btneditar" class="btnMain"></div>
+            <div id="btndata" class="btnMain"></div>
+            <div id="btncompartimentos" class="btnMain"></div>
+            <div id="btnlog" class="btnMain"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="bottom_button">
+            <input id="voltar" type="button" class="buttonMain" value="Voltar">
+            <input id="close" type="button" class="buttonMain" value="Fechar">
+        </div>
+    </div>
+    </div>
+<script> 
+$("#btneditar").click(function () {
+    window.location.replace("apartamentos.html");
+});
+$("#btndata").click(function () {
+    window.location.replace("clock.html");
+});
+$("#btncompartimentos").click(function () {
+    window.location.replace("compartimentos.html");
+});
+$("#btnlog").click(function () {
+    window.location.replace("log.html");
+});
+$("#voltar").click(function () {
+    window.location.replace("main.html");
+});
+$("#close").click(async function () {
+    const response = await fetch('http://localhost:3000/close');
+    const retorno = await response.json()
+    console.log(retorno)
+});
+
+createDiv();
+</script>
+</body>
+</html>

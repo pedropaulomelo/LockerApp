@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/auth_check_user.js"></script>
+</head>
+<body>
+    <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+        <div id="title">
+            <h2>Retire a entrega do compartimento:</h2>
+        </div>
+        <div id="quadro">
+            <container id="divcompAbrir">
+                <div id="textcompAbrir"></div>
+            </container>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="bottom_button">
+            <input id="encerrar" type="button" class="buttonMain" value="Encerrar">
+        </div>
+    </div>
+</div>
+<script> 
+
+var comp = localStorage.getItem("varCompReceber");
+
+$("#textcompAbrir").html(comp);
+
+$("#encerrar").click(function () {
+    window.location.replace("compartimentos.html");
+});
+
+createDiv();
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="title">
+                <h2>Confirmação de entrega:</h2>
+            </div>
+            <div id="quadro">
+                <container id="conf">
+                </container>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="confirmar" type="button" class="button" value="Confirmar">
+                <input id="voltar" type="button" class="button" value="Voltar">
+                <input type="button" class="button" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Cancelar">
+            </div>
+        </div>
+        </div>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+
+          <div class="offcanvas-body">
+             <h2>Está certo de que deseja cancelar esta entrega?</h2>
+            <br>
+
+            <input id="sim" type="button" class="button" value="Sim">
+
+            </div>
+          </div>
+
+
+<script> 
+var valueAp = localStorage.getItem("varAp");
+var valueCompSize = localStorage.getItem("varCompSize");
+var size_label;
+console.log(valueCompSize)
+switch(valueCompSize){
+    case "P":
+        size_label = "Pequeno";
+        break;
+    case "M":
+        size_label = "Médio";
+        break;
+    case "G":
+        size_label = "Grande";
+        break;
+}
+
+async function conf(){
+const resp_end = await fetch(server+'/locker');
+const data_endereco = await resp_end.json();
+
+const logradouro = data_endereco[0].logradouro;
+const numero = data_endereco[0].numero;
+const complemento = data_endereco[0].complemento;
+const cep = data_endereco[0].cep;
+
+$("#conf").html('Tamanho do compartimento: '+size_label+'<br><br>Logradouro: '+logradouro+'<br>Número: '+numero+'<br>Complemento: '+complemento+'<br>Apartamento:'+valueAp+'<br>CEP: '+cep);
+}
+
+conf()
+
+$("#confirmar").click(function () {
+window.location.replace("correio_final.html");
+});
+
+$("#voltar").click(function () {
+window.location.replace("correio_comp.html");
+});
+
+$("#sim").click(function () {
+    window.location.replace("correios.html");
+});
+
+getData(valueCompSize);
+
+async function getData(size) {
+
+    const data_send = {size};
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data_send)
+    };
+
+const response = await fetch(server+'/db_comp',options);
+const data = await response.json();
+console.log(data)
+const length = data.length
+var array = [];
+
+for(i = 0; i < length; i++){
+    array.push(data[i].comp)
+}
+
+const random = Math.floor(Math.random() * array.length);
+
+var compAbrir = array[random];
+console.log(compAbrir)
+localStorage.setItem("varcompAbrir",compAbrir);
+
+}
+
+createDiv();
+</script>
+</body>
+</html>

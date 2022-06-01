@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="btns" class="btnfig">
+                <div id="btncorreios" class="btnMain"></div>
+                <div id="btnentregas" class="btnMain"></div>
+                <div id="btnreceber" class="btnMain"></div>
+                <div id="btngerenciar" class="btnMain"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="voltar" type="button" class="buttonMain" value="Voltar">
+            </div>
+        </div>
+    </div>
+
+<script> 
+$("#btncorreios").click(function () {
+    window.location.replace("correio_credencial.html");
+});
+$("#btnentregas").click(function () {
+    window.location.replace("entregas_telefone.html");
+});
+$("#btnreceber").click(function () {
+    window.location.replace("receberchoose.html");
+});
+$("#btngerenciar").click(function () {
+    window.location.replace("user_name.html");
+});
+$("#voltar").click(function () {
+    window.location.replace("index.html");
+});
+
+createDiv();
+</script>
+</body>
+</html>

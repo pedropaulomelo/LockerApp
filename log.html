@@ -1,0 +1,248 @@
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Relatório</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
+<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/auth_check_user.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="select_box">
+                <div id="select_box_left">
+                    <select id="search_select" class="search_select" onchange="search_alert(this.value)">
+                        <option value="Apartamento">Apartamento</option>
+                        <option value="Data">Data</option>
+                        </select>
+                        <div class="busca_label">Selecione o modo de busca</div>
+                </div>
+                <div id="select_box_right">
+                    <div id="filtro" class="alertdiv"></div>
+                </div>
+                </div>
+                <div id="table"></div>
+            </div>
+            <div class="footer">
+                <div class="bottom_button">
+                    <input id="voltar" type="button" class="buttonMain" value="Voltar">
+                    <input type="button" class="buttonMain" id="lupa" value="Buscar" onclick="search()">
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+var count_campos = 0;
+
+async function search_alert(message) {
+console.log(message)
+document.querySelector(".search_select").value = "";
+var exists_txt = document.querySelector(`#${message}`);
+var exists_btn = document.querySelector("#lupa");
+if(exists_txt){
+  return
+} else if (message==="Apartamento"){
+  count_campos = count_campos + 1;
+
+$('#filtro').append(`
+<div id="${message}">
+<div prop="alertobj" class="alert alert alert-dismissible" role="alert">
+<div id="ap_label" class="busca_label">Apartamento</div>
+<select id="ap_select" class="txt"></select>
+<button id="select_${message}" prop="alertbtn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="clear_lupa(this.id)">
+</div>
+</div>
+`)  
+//-------------------FETCH SERVER PARA CARREGAR TODOS OS MESES -----------------
+const response = await fetch(server+'/db_ap');
+const data = await response.json();
+//-------------------FOREACH PARA PREENCHER O SELECT COM OS FORNECEDORES-----------------
+data.forEach(function(ap){
+    $('#ap_select').append(`<option value="${ap.ap}">${ap.ap}</option>`);  
+})
+document.querySelector('#ap_select').value = "";
+
+} else if (message==="Data"){
+  count_campos = count_campos + 1;
+$('#filtro').append(`
+<div id="${message}">
+<div prop="alertobj" class="alert alert alert-dismissible" role="alert">
+<div id="data_inicial_label" class="busca_label">Data inicial</div>
+<input type="date" id="${message}-from" class="alerttxt">
+<div id="data_final_label" class="busca_label">Data final</div>
+<input type="date" id="${message}-to" class="alerttxt">
+<button id="select_${message}" prop="alertbtn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="clear_lupa(this.id)">
+</div>
+</div>
+`)
+} else {
+  count_campos = count_campos + 1;
+  $('#filtro').append(`
+  <div prop="alertobj" class="alert alert alert-dismissible" role="alert">
+  ${message}
+  <input id="${message}" class="alerttxt" type="text">
+  <button id="select_${message}" prop="alertbtn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="clear_lupa(this.id)">
+  </div>
+  `)
+}
+
+}
+
+function clear_lupa(id_raw){
+
+var id = "#"+id_raw.substring(7)
+
+$(id).remove();
+
+count_campos = count_campos - 1;
+if(count_campos>0){
+  return
+} else {
+}
+}
+
+async function search(){
+    $('#table').html("");
+    
+    const ap_select = document.querySelector('#ap_select')
+    const data_from_select = document.querySelector('#Data-from')
+    const data_to_select = document.querySelector('#Data-to')
+
+    var ap;
+    var data_from;
+    var data_to;
+
+    if(ap_select){
+        var ap = ap_select.value;
+    } else {
+        ap = false
+    }
+
+    if(data_from_select){
+        var data_from_raw = new Date(data_from_select.value);
+        data_from = data_from_raw.getTime();
+    } else {
+        data_from = false
+    }
+
+    if(data_to_select){
+        var data_to_raw = new Date(data_to_select.value);
+        data_to = data_to_raw.getTime()
+    } else {
+        data_to = false
+    }
+
+    clear_lupa("select_Apartamento");
+    clear_lupa("select_Data");
+
+if(ap && !data_from){
+data = {ap}
+route = server+'/log/ap'
+} else if(!ap && data_from){
+data = {data_from,data_to}
+route = server+'/log/data'
+} else if(ap && data_from){
+data = {ap,data_from,data_to}
+route = server+'/log/ap_data'
+} else {
+data = false;
+}
+
+const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data)
+};
+
+var response;
+var retorno;
+
+if(data){
+console.log(data)
+response = await fetch(route, options);
+} else {
+    response = await fetch(server+'/log');   
+}
+retorno = await response.json();
+console.log(retorno)
+
+$('#table').append(`
+<div class="table-responsive">
+  <table id="log_table" class="table table-striped table-sm">
+  <thead>
+  <tr class="celula">
+    <th scope="col">Tipo</th>
+    <th scope="col">ID da Entrega</th>
+    <th scope="col">Apartamento</th>
+    <th scope="col">Compartimento</th>
+    <th scope="col">Data Entrega</th>
+    <th scope="col">Hora Entrega</th>
+    <th scope="col">Data Retirada</th>
+    <th scope="col">Hora Retirada</th>
+    <th scope="col"></th>
+  </tr>
+  </thead>
+  <tbody id="table_body">
+  </tbody>
+  </table>
+</div>
+`)
+
+$('#table_body').html("");
+  
+  var length = retorno.length;
+
+  for(i=0;i<length;i++){
+
+    var tipo = (retorno[i].tipo).toUpperCase();
+    var entregaId = retorno[i].entregaId; 
+    var ap = retorno[i].ap;
+    var comp = retorno[i].comp;
+    var data_entrega = new Date(retorno[i].timestamp).toLocaleDateString();
+    var hora_entrega = new Date(retorno[i].timestamp).toLocaleTimeString();
+    var data_retirada_pre = new Date(retorno[i].sit).toLocaleDateString();
+    var hora_retirada_pre = new Date(retorno[i].sit).toLocaleTimeString();
+    var data_retirada;
+    var hora_retirada;
+
+    if(data_retirada_pre != "Invalid Date"){
+        data_retirada = data_retirada_pre;
+        hora_retirada = hora_retirada_pre;
+    } else {
+        data_retirada = "Pendente";
+        hora_retirada = "Pendente";
+    }
+    
+  $('#table_body').append(`
+  <tr class="celula">
+    <td>${tipo}</td>
+    <td>${entregaId}</td>
+    <td>${ap}</td>
+    <td>${comp}</td>
+    <td>${data_entrega}</td>
+    <td>${hora_entrega}</td>
+    <td>${data_retirada}</td>
+    <td>${hora_retirada}</td>
+    <td>
+    </td>
+  </tr>
+  `); 
+}
+}
+
+$('#voltar').click(function(){
+    window.location.replace("gerenciar.html");
+})
+
+createDiv();
+    </script>

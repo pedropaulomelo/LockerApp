@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/keyboard_numbers.css">
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="title">
+                <h2>Digite seu número de telefone:</h2>
+            </div>
+            <div id="text_input"> 
+                <input type="text" id="telefone" class="caixatxtMain"><br><br>
+            </div>
+            <div id="keyboard_numbers">
+                <div class="virtual-keyboard"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="confirmar" type="button" class="buttonMain" value="Confirmar">
+                <input id="voltar" type="button" class="buttonMain" value="Cancelar">
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" src="js/keyboard-initializer_numbers.js"></script>
+<script type="text/javascript" src="js/keyboard-handler.js"></script>
+
+<script> 
+$("#text_input").click(function () {
+    key_vis = true;
+    $text_input = $(this);
+    $keyboard = $text_input.next();
+    $keyboard.slideToggle(500, function () {
+    });
+});
+
+$("#confirmar").click(function () {
+    valueTelefone = $("#telefone").val();
+    localStorage.setItem("varTelefone", valueTelefone);
+    window.location.replace("entregas_ap.html");
+});
+$("#voltar").click(function () {
+    window.location.replace("main.html");
+});
+
+createDiv();
+</script>
+</body>
+</html>

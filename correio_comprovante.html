@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="titleComprovante"></div>
+            <div id="quadro_comprovante">
+                <container id="divComprovante">
+                    <div id="txtEnd"></div>
+                    <div id="txtCep"></div>
+                    <div id="txtCred"></div>
+                    <div id="txtComp"></div>
+                    <div id="txtAp"></div>
+                    <div id="txtData"></div>
+                    <div id="txtEntrega"></div>
+                </container>
+        </div>
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="finalizar" type="button" class="button" value="Finalizar">
+            </div>
+        </div>   
+    </div>
+
+
+<script> 
+async function getData(){
+const resp_end = await fetch(server+'/locker');
+const data_endereco = await resp_end.json();
+
+const locker = data_endereco[0].cod;
+const logradouro = data_endereco[0].logradouro;
+const numero = data_endereco[0].numero;
+const complemento = data_endereco[0].complemento;
+const cep = `CEP: ${data_endereco[0].cep}`;
+
+var end = `${logradouro}, ${numero} - ${complemento}`
+var valueAp = "Apartamento: " + localStorage.getItem("varAp");
+var valuecompAbrir = "Compartimento: " + localStorage.getItem("varcompAbrir");
+var valueCredencial = "Crendencial do carteiro: " + localStorage.getItem("varCredencial");
+var timestamp = Date.now();
+var date = new Date(timestamp);
+var day = date.getDate();
+var month = date.getMonth();
+var year = date.getFullYear();
+var hours = date.getHours();
+var minutes = "0" + date.getMinutes();
+var seconds = "0" + date.getSeconds();
+var valueDate = "Data/Hora: " + day + "/" + month + "/" + year + " - " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+var valueEntrega = "Entrega: " + localStorage.getItem("varEntregaId");
+var title = `ARMÁRIO ${locker}<br>COMPROVANTE ELETRÔNICO DE ENTREGA`;
+
+$("#titleComprovante").html(title);                
+$("#txtEnd").html(end);
+$("#txtCep").html(cep);
+$("#txtCred").html(valueCredencial);
+$("#txtComp").html(valuecompAbrir);
+$("#txtAp").html(valueAp);
+$("#txtData").html(valueDate);
+$("#txtEntrega").html(valueEntrega);
+}
+getData();
+$("#sim").click(function () {
+    window.location.replace("main.html");
+});
+
+$("#confirmar").click(function () {
+  const telefone = localStorage.getItem("varTelefone");
+  const ap = localStorage.getItem("varAp");
+  const comp = localStorage.getItem("varcompAbrir");
+  const sms = ""; 
+  const zap = "";
+  const sit = "0";
+  const data = {telefone,ap,comp,sms,zap,sit};
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response =  fetch(server+'/db_entregas', options);
+    console.log("Postado");
+});
+
+$("#finalizar").click(function () {
+    window.location.replace("index.html");
+});
+
+createDiv();
+</script>
+</body>
+</html>

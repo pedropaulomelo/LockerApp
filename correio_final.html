@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+  <div class="back">
+  <div class="headers"></div>
+  <div class="content">
+    <div id="title">
+      <h2>Deposite o objeto no compartimento:</h2>
+  </div>
+  <div id="quadro">
+      <container id="divcompAbrir">
+          <div id="textcompAbrir"></div>
+      </container>
+  </div>
+  <div id="confirma">
+      <h2>Confirme a operação após o fechamento da porta.</h2>
+  </div>
+  </div>
+  <div class="footer">
+    <div class="bottom_button">
+      <input id="confirmar" type="button" class="button" value="Confirmar">
+      <input type="button" class="button" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Cancelar">
+  </div>
+  </div>
+  </div>
+    
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+
+      <div class="offcanvas-body">
+         <h2>Está certo de que deseja cancelar esta entrega e retornar ao menu dos Correios?</h2>
+        <br>
+
+        <input id="sim" type="button" class="button" value="Sim">
+
+        </div>
+      </div>
+<script> 
+
+var valuecompAbrir = localStorage.getItem("varcompAbrir");
+
+
+//openComp();
+
+async function openComp(){
+
+var open = valuecompAbrir;
+const data = {open};
+console.log(data)
+const options = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+    };
+    const response = await fetch(server+'/open', options);
+    const retorno = await response.json();
+    console.log(retorno);
+}
+
+$("#textcompAbrir").html(valuecompAbrir);
+
+$("#sim").click(function () {
+    window.location.replace("correios.html");
+});
+
+$("#confirmar").click(async function () {
+  console.log("Iniciando")
+  const credencial = localStorage.getItem("varCredencial");
+  const ap = localStorage.getItem("varAp");
+  const comp = localStorage.getItem("varcompAbrir");
+  const data = {credencial,ap,comp};
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = await fetch(server+'/db_correios', options);
+    const retorno = await response.json();
+    
+    var entregaId = retorno["entregaId"];
+    
+    localStorage.setItem("varEntregaId",retorno["entregaId"]);
+    window.location.replace("correio_comprovante.html");
+});
+
+
+createDiv();
+</script>
+</body>
+</html>

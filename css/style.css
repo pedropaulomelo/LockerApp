@@ -1,0 +1,368 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.back{
+    background-image: url(background.png);
+    background-repeat: no-repeat;
+    width: 1024px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.headers{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+.content{
+    width: 100%;
+    height: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.footer{
+    width: 100%;
+    height: 14%;
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+    padding-top: 10px; 
+}
+
+.bottom_button{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 5%;
+}
+
+
+#text_input{
+    margin-top: 10px;
+    margin-left: 187px;
+    align-items: center;
+}
+
+#matricula{
+    border-radius: 5px;
+    height:50px;    
+    width: 627px;
+    font-size:20pt;
+}
+
+#senha{
+    border-radius: 5px;
+    height:50px;    
+    width: 627px;
+    font-size:20pt;
+}
+
+#keyboard {
+    width: 100%;
+    display: none;
+    margin-top: -10px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+#keyboard_numbers {
+    width: 100%;
+    display: none;
+    margin-top: 30px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.button{
+    border-radius: 05px;
+    width: 160px;   
+    height: 50px;
+    line-height: 30px;
+    background-color: #003057;
+    font-family:verdana;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+}
+
+.ap_tab{
+    width: 100%;
+    margin-left: 100px;
+    margin-bottom: 35px;;
+}
+
+.ap_row{
+    width: 686px;
+}
+
+.ap_button{
+    margin: 4px;
+    border-radius: 05px;
+    width: 160px;   
+    height: 50px;
+    line-height: 30px;
+    background-color: #003057;
+    font-family:verdana;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;    
+}
+
+#buttons{
+    width: 1024px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#btn_cancelar{
+width: 100%;
+text-align: center;
+}
+
+#title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    color:#003057;
+    text-align: center;
+}
+
+#titleComprovante{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color:#003057;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.compartimentos{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.caixa{
+    margin:25px;
+}
+
+#carouselExampleIndicators{
+    width: 886px;
+    margin-left: 60px;
+    margin-bottom: -10px;
+}
+
+#quadro{
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    height: 250px;
+    margin-bottom: 70px;
+}
+
+#quadro_comprovante{
+    margin-left: 180px;
+    margin-top: 20px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 650px;
+    height: 270px;
+    margin-bottom: 70px;
+    background-color: white;
+    border-color: #003057;
+    border-style: solid;
+    color:#003057;
+    font-size: 28px;
+    line-height: 36px;
+}
+
+#conf{
+    width: 550px;
+    height: 230px;
+    margin-top: 25px;
+    background-color: white;
+    border-color: #003057;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    font-size: 24px;
+    line-height: 32px;
+    color: #003057;
+    font-family: verdana;
+    align-items: center;
+}
+
+.bodyCore {
+    width: 1024px;
+    height: 600px;
+    background-image: url(background_coretechs.png);
+    background-repeat: no-repeat;
+  }
+
+
+#btnentregar{
+    width: 225px;
+    height: 300px;
+    background-image: url(Btn_entregar.png);
+    background-repeat: no-repeat;
+    margin: 0.5%;
+}
+
+#btnlog{
+    width: 225px;
+    height: 300px;
+    background-image: url(Btn_log.png);
+    background-repeat: no-repeat;
+    margin-top: 150px;
+    margin-left: 8px;
+    margin: 0.5%;
+}
+
+.button{
+    margin:0.3%;
+}
+
+#btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#divcompAbrir{
+    width: 250px;
+    height: 250px;
+    margin-top: 25px;
+    background-color: #003057;
+    border-color: #003057;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    font-size: 200px;
+    line-height: 200px;
+    color: white;
+    font-family: verdana;
+    align-items: center;
+}
+
+#textcompAbrir{
+    width: 250px;
+    text-align: center;
+}
+
+#confirma{
+    text-align: center;
+    color: #003057;
+    margin-top: -20px;
+    margin-bottom: 30px;
+}
+.virtual-keyboard{
+    width: 100%;
+}
+
+.alertdiv{
+    display: flex;
+    flex-direction: column; 
+    width: 70%;
+    justify-content: center;
+    }
+    .alerttxt{
+      margin-left: 10px;
+      width: 75%;
+    }
+    .search_select{
+    width: 200px; 
+    margin:2%
+    }
+    .busca_label{
+        font-size: 16px;
+    }
+    #ap_select{
+        width: 100%;
+        margin: 2%;
+    }
+    #buscar{
+      margin-left: 30px;
+      font-size: 18px;
+    }
+    #data_final_label{
+      margin-left: 25px;
+    }
+    div[prop="alertobj"]{
+        display: flex;
+        align-items:center;
+        margin-top: 7px;
+        width:400px;
+        height: 40px;
+      }
+
+      #select_box{
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+      }
+      #select_box_left{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+          width: 50%;
+      }
+      #select_box_right{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+      }
+      #table{
+          background-color: white;
+          overflow-y: scroll;
+          border-style: solid;
+          width: 100%;
+          height: 100%;
+      }
+      .celula{
+          text-align: center;
+      }
+
+      #clock{
+        opacity: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        font-weight: bold;
+        background-color: white;
+        box-shadow: inset;
+        color:#003057;
+        text-align:center;
+        margin:5%;
+        width: 240px;
+        height: 28px;
+        box-shadow: 0 0 .3em gray, 0 0 .3em white;
+    }

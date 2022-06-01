@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/keyboard.css">
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/auth_check_user.js"></script>
+</head>
+<body>
+    <div class="headers"></div>
+    <div class="content">
+        <div id="title">
+            <h2>Digite a senha acesso:</h2>
+        </div>
+        <div id="text_input"> 
+            <input type="text" id="senhauser" class="caixatxtMain"><br><br>
+        </div>
+        <div id="keyboard">
+            <div class="virtual-keyboard"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="bottom_button">
+            <input id="confirmar" type="button" class="buttonMain" value="Confirmar">
+            <input id="voltar" type="button" class="buttonMain" value="Voltar"> 
+        </div>
+    </div>
+
+    
+    
+<script type="text/javascript" src="js/keyboard-initializer.js"></script>
+<script type="text/javascript" src="js/keyboard-handler.js"></script>
+
+<script> 
+$("#text_input").click(function () {
+    key_vis = true;
+    $text_input = $(this);
+    $keyboard = $text_input.next();
+    $keyboard.slideToggle(500, function () {
+    });
+});
+
+$("#confirmar").click(function () {
+    valueSenhaUser = $("#senhauser").val();
+    localStorage.setItem("varSenhaUser", valueSenhaUser);
+    window.location.replace(".html");
+});
+$("#voltar").click(function () {
+    window.location.replace("main.html");
+});
+$("#encerrar").click(function () {
+    window.location.replace("index.html");
+});
+
+
+createDiv();
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+    <ul id="Foo">
+        <li>um</li>
+        <li>dois</li>
+        <li>tres</li>
+        <li>quatro</li>
+        <li>cinco</li>
+      </ul>
+      
+      <select id="languages-select">
+        <option value="" disabled="" selected="">Choose your language</option>
+        <option value="ruby">Ruby</option>
+        <option value="javascript">JavaScript</option>
+        <option value="python">Python</option>
+        <option value="golang">GoLang</option>
+      </select>
+      <button onclick="recarrega()">recarrega</button>
+   
+<script> 
+function recarrega() {
+  var p = document.getElementById('Foo');
+  var filhos = p.childNodes;
+  for( i = filhos.length - 1; i >= 0; i-- ) {
+    if( filhos[i].tagName == 'LI' ) {
+      p.removeChild( filhos[i] );
+    }
+  }
+
+  var li = document.createElement('li');
+  li.innerHTML = 'seis';
+  p.appendChild(li);
+
+  var li = document.createElement('li');
+  li.innerHTML = 'sete';
+  p.appendChild(li);
+}
+</script>
+</body>
+</html>
+
+

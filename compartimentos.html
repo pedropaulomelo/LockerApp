@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/auth_check_user.js"></script>
+</head>
+<body>
+  <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+      <div id="cab">
+        <div class="comp_cab_item">Compartimento</div>
+        <div class="tamanho_cab_item">Tamanho</div>
+        <div class="sit_cab_item">Situação</div>
+        <div class="lim_cab_item">Data limite</div>
+        <div class="ap_cab_item">AP</div>
+      </div>
+      <div id="editar"></div>
+    </div>
+    <div class="footer">
+      <input id="voltar" type="button" class="buttonMain" onclick="window.location.replace('gerenciar.html')" value="Voltar">
+      <input id="inserir" type="button" class="buttonMain" value="Inserir">
+      <input id="locker" type="button" class="buttonMain" value="Locker">
+    </div>
+    </div>
+
+<script> 
+
+getData();
+
+  async function getData() {
+    console.log("OK")
+  const response = await fetch(server+'/db_comp');
+  const data = await response.json();
+  var length = data.length;
+  console.log(data);
+
+  const lista = document.createElement('div');
+  const acordion = document.createElement('div');
+  acordion.innerHTML = `<div class="accordion" id="accordionExample">`;
+
+  for(i = 1; i <= 17; i++) {
+    let dataString = data.find(el => el.comp === i.toString());
+      const div = document.createElement('div');
+      const offcanvas = document.createElement('div');
+
+
+      div.innerHTML = `
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="acordion_id">
+                <button id="btn_acordion" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_target" aria-expanded="false" aria-controls="collapse_controls">
+                  <div id="comp_comp" class="comp_item"></div>
+                  <div id="size_comp" class="comp_item_size"></div>
+                  <div id="sit_comp" class="comp_item"></div>
+                  <div id="entrega_comp" class="comp_item"></div>
+                  <div id="ap_comp" class="comp_item"></div>
+                </button>
+              </h2>
+              <div id="collapse_id" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
+                <div id="acordion_body_id" class="accordion-body">
+                 
+                </div>
+              </div>  
+            </div>`;
+
+        offcanvas.innerHTML = `
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasEntregar" aria-labelledby="offcanvasExampleLabel">
+
+            <div class="offcanvas-body">
+            <h2>Está certo de que deseja depositar uma entrega neste compartimento?</h2>
+            <br>
+
+            <input id="sim" type="button" class="buttonMain" value="Sim">
+
+            </div>
+            </div>
+
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasAbrir" aria-labelledby="offcanvasExampleLabel">
+
+            <div class="offcanvas-body">
+            <h2>Está certo de que deseja abrir este compartimento?</h2>
+            <br>
+
+            <input id="sim_open" type="button" class="buttonMain" value="Sim">
+
+            </div>
+            </div>
+
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasReceber" aria-labelledby="offcanvasExampleLabel">
+
+            <div class="offcanvas-body">
+            <h2>Está certo de que deseja receber a entrega como Administrador?</h2>
+            <br>
+
+            <input id="sim_receber" type="button" class="buttonMain" value="Sim">
+
+            </div>
+            </div>
+
+
+          
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasBloquear" aria-labelledby="offcanvasExampleLabel">
+
+            <div class="offcanvas-body">
+            <h2>Está certo de que deseja bloquear esse compartimento?</h2>
+            <br>
+
+            <input id="sim_lock" type="button" class="buttonMain" value="Sim">
+
+            </div>
+            </div>
+
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasDesbloquear" aria-labelledby="offcanvasExampleLabel">
+
+            <div class="offcanvas-body">
+            <h2>Está certo de que deseja desbloquear este compartimento?</h2>
+            <br>
+
+            <input id="sim_unlock" type="button" class="buttonMain" value="Sim">
+
+            </div>
+            </div>
+        `
+
+            lista.setAttribute("id","lista");
+            acordion.setAttribute("class","acordion");
+            acordion.append(div);
+            lista.append(offcanvas);            
+            lista.append(acordion);
+            $('.content').append(lista);
+            
+            var data_entrega;
+            var timestamp = dataString["date"];
+            var data_entrega = new Date(timestamp)
+            if(dataString["sit"] === "OCUPADO"){
+              var date = new Date(dataString['date'])
+              data_entrega = date.toLocaleDateString();
+            } else{
+              data_entrega = "";
+            }
+
+
+            document.getElementById("acordion_id").setAttribute("id","acordion"+i.toString());
+            document.getElementById("btn_acordion").setAttribute("data-bs-target","#collapse"+i.toString());
+            document.getElementById("btn_acordion").setAttribute("aria-controls","#collapse"+i.toString());
+            document.getElementById("btn_acordion").setAttribute("id","#btn_acordion"+i.toString());
+            document.getElementById("collapse_id").setAttribute("id","collapse"+i.toString());
+            document.getElementById("comp_comp").setAttribute("id","comp_comp"+i.toString());
+            document.getElementById("size_comp").setAttribute("id","size_comp"+i.toString());
+            document.getElementById("sit_comp").setAttribute("id","sit_comp"+i.toString());
+            document.getElementById("entrega_comp").setAttribute("id","entrega_comp"+i.toString());
+            document.getElementById("ap_comp").setAttribute("id","ap_comp"+i.toString());
+            document.getElementById("acordion_body_id").setAttribute("id","acordion_body_id"+i.toString());
+            
+
+            if(dataString["ap"] === ""){
+              var ap = "";
+            } else {
+              var ap = "AP: "+dataString["ap"]
+            };
+
+
+            document.getElementById("comp_comp"+i.toString()).innerText = "COMP "+dataString["comp"];
+            document.getElementById("size_comp"+i.toString()).innerText = dataString["size"];
+            document.getElementById("sit_comp"+i.toString()).innerText = dataString["sit"];
+            document.getElementById("entrega_comp"+i.toString()).innerText = data_entrega;
+            document.getElementById("ap_comp"+i.toString()).innerText = dataString["ap"];
+
+            if(dataString["sit"] == "DISPONÍVEL"){
+                var divAtual = document.getElementById("acordion_body_id"+dataString["comp"]);
+                const btn_comp_receber = document.createElement('div');
+                const btn_comp_entregar = document.createElement('div');
+                const btn_comp_bloquear = document.createElement('div');
+        
+                btn_comp_receber.innerHTML = `<input type="button" class="buttonComp" data-bs-toggle="offcanvas" href="#offcanvasAbrir" role="button" aria-controls="offcanvasReceber" value="Abrir">`;
+                btn_comp_entregar.innerHTML = `<input type="button" class="buttonComp" data-bs-toggle="offcanvas" href="#offcanvasEntregar" role="button" aria-controls="offcanvasEntregar" value="Entregar">`;
+                btn_comp_bloquear.innerHTML = `<input type="button" class="buttonComp" data-bs-toggle="offcanvas" href="#offcanvasBloquear" role="button" aria-controls="offcanvasBloquear" value="Bloquear">`;
+
+                btn_comp_receber.id = "btn_comp_receber" + dataString["comp"];
+                btn_comp_entregar.id = "btn_comp_entregar" + dataString["comp"];
+                btn_comp_bloquear.id = "btn_comp_bloquear" + dataString["comp"];
+
+                divAtual.appendChild(btn_comp_receber);
+                divAtual.appendChild(btn_comp_entregar);
+                divAtual.appendChild(btn_comp_bloquear);
+
+                document.getElementById("btn_comp_receber" + dataString["comp"]).setAttribute("comp",dataString["comp"]);
+                document.getElementById("btn_comp_entregar" + dataString["comp"]).setAttribute("comp",dataString["comp"]);
+                document.getElementById("btn_comp_entregar" + dataString["comp"]).setAttribute("size",dataString["size"]);
+                document.getElementById("btn_comp_bloquear" + dataString["comp"]).setAttribute("comp",dataString["comp"]);
+                document.getElementById("btn_comp_receber" + dataString["comp"]).setAttribute("class","btn_comp_receber");
+                document.getElementById("btn_comp_entregar" + dataString["comp"]).setAttribute("class","btn_comp_entregar");
+                document.getElementById("btn_comp_bloquear" + dataString["comp"]).setAttribute("class","btn_comp_bloquear");
+            } 
+
+            else 
+            
+            {
+
+                if(dataString["sit"] == "OCUPADO"){
+                var divAtual = document.getElementById("acordion_body_id"+dataString["comp"]);
+                const btn_comp_receber = document.createElement('div');
+        
+                btn_comp_receber.innerHTML = `<input type="button" class="buttonComp" data-bs-toggle="offcanvas" href="#offcanvasReceber" role="button" aria-controls="offcanvasReceber" value="Receber">`;
+                
+                btn_comp_receber.id = "btn_comp_receber" + dataString["comp"];
+                
+                divAtual.appendChild(btn_comp_receber);
+                
+                document.getElementById("btn_comp_receber" + dataString["comp"]).setAttribute("comp",dataString["comp"]);
+                document.getElementById("btn_comp_receber" + dataString["comp"]).setAttribute("entrega",dataString["entregaId"]);
+                document.getElementById("btn_comp_receber" + dataString["comp"]).setAttribute("class","btn_comp_receber");
+            }
+            
+            else
+
+            {
+
+                if(dataString["sit"] == "BLOQUEADO"){
+                var divAtual = document.getElementById("acordion_body_id"+dataString["comp"]);
+                const btn_comp_bloquear = document.createElement('div');
+        
+                btn_comp_bloquear.innerHTML = `<input type="button" class="buttonComp" data-bs-toggle="offcanvas" href="#offcanvasDesbloquear" role="button" aria-controls="offcanvasBloquear" value="Desbloquear">`;
+
+                btn_comp_bloquear.id = "btn_comp_bloquear" + dataString["comp"];
+                
+                divAtual.appendChild(btn_comp_bloquear);
+                
+                document.getElementById("btn_comp_bloquear" + dataString["comp"]).setAttribute("comp",dataString["comp"]);
+                document.getElementById("btn_comp_bloquear" + dataString["comp"]).setAttribute("class","btn_comp_bloquear");
+            }
+
+            }
+
+            }
+  }
+
+
+
+$("#voltar").click(function () {
+    window.location.replace("gerenciar.html");
+});
+
+$(".btn_comp_receber").click(function () {
+  localStorage.setItem("varCompReceber",$(this).attr("comp"));
+  localStorage.setItem("varEntregaId",$(this).attr("entrega"));
+});
+
+$(".btn_comp_entregar").click(function () {
+  localStorage.setItem("varCompSize",$(this).attr("size"));
+  localStorage.setItem("varcompAbrir",$(this).attr("comp"));
+});
+
+$(".btn_comp_bloquear").click(function () {
+  localStorage.setItem("varCompLock",$(this).attr("comp"));
+});
+
+
+$("#offcanvasReceber").click(function () {
+  var entregaId = localStorage.getItem("varEntregaId");
+
+  const data = {entregaId};
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/receber/adm/', options);
+    
+    window.location.replace("adm_receber.html");
+});
+
+
+$("#sim_lock").click(async function () {
+  var comp = localStorage.getItem("varCompLock")
+  var sit_pre = "L"
+  const data = {comp,sit_pre};
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = await fetch(server+'/db_comp/lock', options);
+    window.location.reload();
+});
+
+
+$("#offcanvasEntregar").click(function () {
+    window.location.replace("adm_ap.html");
+});
+
+
+$("#sim_unlock").click(async function () {
+  var comp = localStorage.getItem("varCompLock")
+  var sit_pre = "U"
+  const data = {comp,sit_pre};
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = await fetch(server+'/db_comp/lock', options);
+    window.location.reload();
+});
+
+$("#sim_open").click(async function () {
+  var comp = localStorage.getItem("varCompReceber")
+  console.log(comp)
+  const data = {comp};
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = await fetch(server+'/open', options);
+});
+
+}
+
+$('#inserir').click(function(){
+  $('#editar').append(`
+  <div class="modal fade" id="insert_comp_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Novo Compartimento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Tamanho
+        <select id="size_select">
+          <option value="P">Pequeno</option>
+          <option value="M">Médio</option>
+          <option value="G">Grande</option>  
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="confirmar_insert()">Inserir</button>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+$('#insert_comp_modal').modal('show');
+});
+
+function confirmar_insert(){
+  const size = document.querySelector('#size_select').value;
+  const data = {size};
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/comp/insert/', options);
+    window.location.reload();
+}
+
+function editar_clear(){
+  $('#editar').html("");
+}
+
+$('#locker').click(async function(){
+  var response = await fetch(server+'/locker');
+  var retorno = await response.json();
+  var cod = retorno[0].cod;
+  var logradouro = retorno[0].logradouro;
+  var numero = retorno[0].numero;
+  var complemento = retorno[0].complemento;
+  var cep = retorno[0].cep;
+
+  $('#editar').append(`
+  <div class="modal fade" id="locker_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Dados do Locker</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Código
+        <input type="text" id="cod_txt" value="${cod}" disabled></input>
+        Logradouro
+        <input type="text" id="logradouro_txt" value="${logradouro}"></input>
+        Número
+        <input type="text" id="numero_txt" value="${numero}"></input>
+        Complemento
+        <input type="text" id="complemento_txt" value="${complemento}"></input>
+        CEP
+        <input type="text" id="cep_txt" value="${cep}"></input>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="alterar()">Alterar</button>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+$('#locker_modal').modal('show');
+});
+
+function alterar(){
+  const cod = document.querySelector('#cod_txt').value;
+  const logradouro = document.querySelector('#logradouro_txt').value;
+  const numero = document.querySelector('#numero_txt').value;
+  const complemento = document.querySelector('#complemento_txt').value;
+  const cep = document.querySelector('#cep_txt').value;
+  const data = {cod,logradouro,numero,complemento,cep};
+  console.log(data)
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/locker/', options);
+    $('#locker_modal').modal('hide');
+    editar_clear();
+}
+
+createDiv();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Correios</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+        <div id="btns" class="btnfig">
+            <div id="btnentregar" class="btnMain"></div>
+            <div id="btnlog" class="btnMain"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="bottom_button">
+            <input id="btnencerrar" type="button" class="button"  data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Encerrar">
+        </div>
+    </div>
+</div>
+        
+
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+
+        <div class="offcanvas-body">
+           <h2>Está certo de que deseja encerrar a sessão?</h2>
+          <br>
+
+          <input id="sim" type="button" class="button" value="Sim">
+
+          </div>
+        </div>
+
+<script> 
+$("#btnentregar").click(function () {
+    window.location.replace("correio_ap.html");
+});
+$("#btnreceber").click(function () {
+    window.location.replace("receberchoose.html");
+});
+$("#btnlog").click(function () {
+    window.location.replace("log_correios.html");
+});
+$("#sim").click(function () {
+    window.location.replace("main.html");
+});
+createDiv();
+</script>
+</body>
+</html>

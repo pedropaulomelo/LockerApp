@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title> 
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="title">
+                <h2>Selecione o apartamento:</h2>
+            </div>
+            <div id="Carrosel">    
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+
+
+                    <div id="indicators" class="carousel-indicators"></div>
+                    <div id="carousel_push" class="carousel-inner"></div>
+
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <img id="prev" src="./assets/prev.svg" class="d-block w-100">
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <img id="next" src="./assets/next.svg" class="d-block w-100">
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+        </div>   
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="btnencerrar" type="button" class="buttonMain" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Cancelar">
+            </div>  
+        </div>  
+        </div>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+
+            <div class="offcanvas-body">
+               <h2>Está certo de que deseja cancelar esta entrega?</h2>
+              <br>
+    
+              <input id="sim" type="button" class="buttonMain" value="Sim">
+    
+              </div>
+            </div>      
+<script> 
+function clickAp(ValueAp) {
+    console.log("Chegou")
+    localStorage.setItem("varAp", ValueAp);
+    window.location.replace("entregas_comp.html");
+};
+
+$("#sim").click(function () {
+    window.location.replace("main.html");
+});
+
+async function loadPage(){
+    const row_width = 4;
+    const tab_height = 6;
+
+    const response = await fetch(server+'/db_ap');
+    const retorno = await response.json();
+    console.log(retorno)
+    console.log(retorno[0].ap)
+    
+    const length = retorno.length;
+    const total_rows = Math.ceil(length/row_width); 
+    const total_tabs_pre = Math.ceil(total_rows/tab_height);
+    if(total_tabs_pre>0){
+        total_tabs = total_tabs_pre;
+    } else {
+        total_tabs = 1;
+    }
+    console.log("Nº de APs: "+length)
+    console.log("Nº de linhas: "+total_rows)
+    console.log("Nº de Tabs: "+total_tabs)
+
+    for(a=0;a<total_tabs;a++){
+        if(a===0){
+        $('#indicators').append(`
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="${a}" class="active" aria-current="true" aria-label="Slide 1"></button>
+        `)
+        } else {
+            $('#indicators').append(`
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="${a}" aria-label="Slide 1"></button>
+        `) 
+        }
+    }
+
+    for(i=0;i<total_tabs;i++){
+        console.log("tab"+i)
+        if(i===0){
+        $('#carousel_push').append(`
+        <div class="carousel-item active">
+        <div class="ap_tab" id="tab${i}"></div>
+        </div>   
+    `)
+        } else {
+            $('#carousel_push').append(`
+        <div class="carousel-item">
+        <div class="ap_tab" id="tab${i}"></div>
+        </div>   
+    `)
+        }
+    for(j=0;j<tab_height;j++){
+        var row_ind = j + i*6
+        console.log("row"+row_ind)
+        $(`#tab${i}`).append(`
+        <div id="row${row_ind}" class="ap_row"></div> 
+    `)
+    for(k=0;k<row_width;k++){
+        var index = k + j*4 + i*24
+        var id = retorno[index].ap;
+        console.log("ap"+id)
+        $(`#row${row_ind}`).append(`
+            <input type="button" id="${id}" class="ap_button" value="${id}" onclick="clickAp(this.value)">
+        `) 
+    }
+    }
+    }
+
+}
+loadPage();
+
+createDiv();
+</script>
+</body>
+</html>

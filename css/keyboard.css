@@ -1,0 +1,41 @@
+.virtual-keyboard {
+	background-color: #cccccc;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	border-radius: 5px;
+	font-size: 0;
+	user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	-webkit-user-select: none;
+	display: inline-block;
+}
+
+.virtual-keyboard .lowercase-row {
+	display: block;
+}
+
+.virtual-keyboard .uppercase-row {
+	display: none;
+}
+
+.virtual-keyboard .key {
+	background-color: #ffffff;
+	width: 50px;
+	height: 50px;
+	border-radius: 8.3px;
+	display: inline-block;
+	text-align: center;
+	line-height: 50px;
+	vertical-align: middle;
+	margin-left: 8.33px;
+	margin-top: 8.33px;
+	font-size: 22px;
+	font-family: sans-serif;
+	cursor: pointer;
+	transition: 0.1s ease;
+}
+
+.virtual-keyboard .key:active {
+	background-color: #999;
+}

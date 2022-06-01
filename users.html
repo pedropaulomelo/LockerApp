@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Gerenciar Usuários</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+  <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+      <div id="cab">
+        <div class="id_item">ID</div>
+        <div class="user_item">Usuário</div>
+        <div class="perfil_item">Perfil</div>
+      </div>
+      <div id="main"></div>
+      <div id="editar"></div>
+    </div>
+    <div class="footer">
+      <div class="bottom_button">  
+        <input id="btn_voltar" type="button" class="buttonMain" value="Voltar">
+        <input id="btn_inserir" type="button" class="buttonMain" value="Inserir">
+      </div>
+    </div>
+    </div>
+
+
+<script> 
+
+getData();
+
+  async function getData() {
+  const response = await fetch(server+'/db_users');
+  const data = await response.json();
+  
+  var length = data.length;
+  const lista = document.createElement('div');
+  $('#main').append(`
+  <div id="lista">
+  <div id="accordionExample" class="accordion"></div>
+  </div>
+  `)
+
+  for(i = 0; i < length; i++) {
+    let dataString = data[i]
+    console.log(dataString)
+    $('#accordionExample').append(`
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="acordion${dataString.id}">
+                <button id="btn_acordion${dataString.id}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${dataString.id}" aria-expanded="false" aria-controls="collapse${dataString.id}">
+                  <div id="id${dataString.id}" class="id_item">${dataString.id}</div>
+                  <div id="user${dataString.id}" class="user_item">${dataString.user}</div>
+                  <div id="perfil${dataString.id}" class="perfil_item">${dataString.perfil}</div>
+                </button>
+              </h2>
+              <div id="collapse${dataString.id}" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
+                <div id="acordion_body${dataString.id}" class="accordion-body">
+                  <input type="button" id="btn_editar_${dataString.id}" class="buttonComp"  href="#" role="button" value="Editar" onclick="editar_user(this.id,11)">
+                  <input type="button" id="btn_deletar_${dataString.id}" class="buttonComp"  href="#" role="button" value="Apagar" onclick="confirmar_deletar_user(this.id,12)">
+                  <input type="button" id="btn_pass_${dataString.id}" class="buttonComp"  href="#" role="button" value="Senha" onclick="confirma_pass_user(this.id,9)">
+                </div>
+              </div>  
+            </div>
+            `);
+  }
+
+$("#btn_voltar").click(function () {
+    window.location.replace("gerenciar.html");
+});
+}
+$('#btn_inserir').click(function(){
+  $('#editar').append(`
+  <div class="modal fade" id="insert_user_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Novo Usuário</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Apartamento
+        <input type="text" id="user_txt" class="txt">
+        Morador Master
+        <select id="perfil_txt" class="txt">
+            <option>Administrador</option>
+            <option>Síndico</option>
+            <option>Zelador</option>    
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="confirmar_insert_ap()">Inserir</button>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+$('#insert_user_modal').modal('show');
+});
+
+function confirmar_insert_ap() {
+    var user = $('#user_txt').val();
+    var perfil = $('#perfil_txt').val();
+
+    var data = {user,perfil}
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/insert_user/', options);
+    location.reload();
+};
+
+function confirmar_deletar_user(id_raw,start){
+  id = id_raw.substring(start);
+  $('#editar').append(`
+  <div id="modal_div">
+    <div class="modal fade" id="deletar_user_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Editar Apartamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        Está certo de que deseja apagar o cadastro do Usuário ${id}?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Cancelar</button>
+          <button type="button" id="${id}" class="btn btn-sm btn-outline-secondary" onclick="deletar_user(this.id)">Sim</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  `)
+  $('#deletar_user_modal').modal('show');
+  
+}
+
+function editar_user(id_raw,start) {
+  var id = id_raw.substring(start)
+  console.log(id)
+  id_id = "#id"+id
+  id_user = "#user"+id
+  id_perfil = "#perfil"+id
+
+  var user = document.querySelector(id_user).textContent;
+  var perfil = document.querySelector(id_perfil).textContent;
+
+  $('#editar').append(`
+  <div class="modal fade" id="editar_user_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Contrato</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Apartamento
+        <input type="text" id="id_txt" class="txt" disabled value="${id}">
+        Morador Master
+        <input type="text" id="user_txt" class="txt" value="${user}">
+        Número de telefone
+        <input type="text" id="perfil_txt" class="txt" value="${perfil}">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="confirmar_editar_user()">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+$('#editar_user_modal').modal('show');
+};
+
+function confirmar_editar_user(){
+  var id = document.querySelector('#id_txt').value;
+  var user = document.querySelector('#user_txt').value;
+  var perfil = document.querySelector('#perfil_txt').value;
+
+  $('#editar_user_modal').modal('hide');
+  editar_clear();
+
+  var data = {id,user,perfil}
+
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/editar_user/', options);
+    location.reload();
+
+}
+
+function deletar_user(id){
+  $('#deletar_user_modal').modal('hide');
+  editar_clear();
+
+    var data = {id}
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/delete_user/', options);
+    location.reload();
+}
+
+function editar_clear(){
+  $('#editar').html("");
+}
+
+async function pass_user(id,start){
+    var data = {id}
+console.log(data)
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    
+    const response = await fetch(server+'/db_users',options);
+    const retorno = await response.json();
+    console.log(retorno);
+
+    $('.modal-footer').html("");
+    $('.modal-body').html("");
+    $('.modal-body').append(`
+    <div>Senha do Usuário</div>
+        <h5>${retorno}</h5>
+        <div>Duração: 5 segundos</div>
+    `)
+    setTimeout(() => {
+        $('#pass_user_modal').modal("hide");
+        $('#editar').html("");
+    },5000)
+}
+
+function confirma_pass_user(id_raw,start){
+    var id = id_raw.substring(start)
+$('#editar').append(`
+  <div class="modal fade" id="pass_user_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Senha de Usuário</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Você confirma a necessidade de visualizar a senha do usuário ${id}? 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Não</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="pass_user(${id},${start})">Sim</button>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+$('#pass_user_modal').modal('show');
+};
+
+createDiv();
+</script>
+</body>
+</html>

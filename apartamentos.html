@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Editar Apartamentos</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/auth_check_user.js"></script>
+</head>
+<body>
+  <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+      <div id="cab">
+        <div class="ap_item">Apartamento</div>
+        <div class="morador_item">Morador Master</div>
+        <div class="tel_item">Telefone</div>
+      </div>
+      <div id="main"></div>
+      <div id="editar"></div>
+    </div>
+    <div class="footer">
+      <div class="bottom_button">  
+        <input id="btn_voltar" type="button" class="buttonMain" value="Voltar">
+        <input id="btn_inserir" type="button" class="buttonMain" value="Inserir">
+      </div>
+    </div>
+    </div>
+
+
+<script> 
+
+getData();
+
+  async function getData() {
+  const response = await fetch(server+'/db_ap');
+  const data = await response.json();
+  
+  var length = data.length;
+  const lista = document.createElement('div');
+  $('#main').append(`
+  <div id="lista">
+  <div id="accordionExample" class="accordion"></div>
+  </div>
+  `)
+
+  for(i = 0; i < length; i++) {
+    let dataString = data[i]
+    console.log(dataString)
+    $('#accordionExample').append(`
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="acordion${dataString.ap}">
+                <button id="btn_acordion${dataString.ap}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${dataString.ap}" aria-expanded="false" aria-controls="collapse${dataString.ap}">
+                  <div id="ap${dataString.ap}" class="ap_item">${dataString.ap}</div>
+                  <div id="morador${dataString.ap}" class="morador_item">${dataString.morador}</div>
+                  <div id="tel${dataString.ap}" class="tel_item">${dataString.tel}</div>
+                </button>
+              </h2>
+              <div id="collapse${dataString.ap}" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
+                <div id="acordion_body${dataString.ap}" class="accordion-body">
+                  <input type="button" id="btn_editar_${dataString.ap}" class="buttonComp"  href="#" role="button" value="Editar" onclick="editar_ap(this.id,11)">
+                  <input type="button" id="btn_deletar_${dataString.ap}" class="buttonComp"  href="#" role="button" value="Apagar" onclick="confirmar_deletar_ap(this.id,12)">
+                </div>
+              </div>  
+            </div>
+            `);
+  }
+
+$("#btn_voltar").click(function () {
+    window.location.replace("gerenciar.html");
+});
+}
+$('#btn_inserir').click(function(){
+  $('#editar').append(`
+  <div class="modal fade" id="insert_ap_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Contrato</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Apartamento
+        <input type="text" id="ap_txt" class="txt">
+        Morador Master
+        <input type="text" id="morador_txt" class="txt">
+        Número de telefone
+        <input type="text" id="tel_txt" class="txt">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="confirmar_insert_ap()">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+$('#insert_ap_modal').modal('show');
+});
+
+function confirmar_insert_ap() {
+    var ap = $('#ap_txt').val();
+    var morador = $('#morador_txt').val();
+    var tel = $('#tel_txt').val();
+
+    var data = {ap,morador,tel}
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/insert_ap/', options);
+    location.reload();
+};
+
+function confirmar_deletar_ap(id_raw,start){
+  id = id_raw.substring(start);
+  $('#editar').append(`
+  <div id="modal_div">
+    <div class="modal fade" id="deletar_ap_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Editar Apartamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        Está certo de que deseja apagar o cadastro do Apartamento ${id}?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Cancelar</button>
+          <button type="button" id="${id}" class="btn btn-sm btn-outline-secondary" onclick="deletar_ap(this.id)">Sim</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  `)
+  $('#deletar_ap_modal').modal('show');
+  
+}
+
+function editar_ap(id_raw,start) {
+  var id = id_raw.substring(start)
+  console.log(id)
+  id_ap = "#ap"+id
+  id_morador = "#morador"+id
+  id_tel = "#tel"+id
+
+  var ap = document.querySelector(id_ap).textContent;
+  var morador = document.querySelector(id_morador).textContent;
+  var tel = document.querySelector(id_tel).textContent;
+
+  $('#editar').append(`
+  <div class="modal fade" id="editar_ap_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: block;" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Contrato</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Apartamento
+        <input type="text" id="ap_txt" class="txt" disabled value="${ap}">
+        Morador Master
+        <input type="text" id="morador_txt" class="txt" value="${morador}">
+        Número de telefone
+        <input type="text" id="tel_txt" class="txt" value="${tel}">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="confirmar_editar_ap()">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+$('#editar_ap_modal').modal('show');
+};
+
+function editar_div_clear(){
+  $('#editar').html("");
+}
+
+function confirmar_editar_ap(){
+  var ap = document.querySelector('#ap_txt').value;
+  var morador = document.querySelector('#morador_txt').value;
+  var tel = document.querySelector('#tel_txt').value;
+
+  $('#editar_ap_modal').modal('hide');
+  editar_clear();
+
+  var data = {ap,morador,tel}
+
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/editar_ap/', options);
+    location.reload();
+
+}
+
+function deletar_ap(ap){
+  $('#deletar_ap_modal').modal('hide');
+  editar_clear();
+
+    var data = {ap}
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    const response = fetch(server+'/delete_ap/', options);
+    location.reload();
+}
+
+function editar_clear(){
+  $('#editar').html("");
+}
+
+createDiv();
+</script>
+</body>
+</html>

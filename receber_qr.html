@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="title">
+                <h2>Mostre o QRCode para a câmera:</h2>
+            </div>
+            <div id="qrBox">
+                <video id="qr-video" ></video>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="cancelar" type="button" class="buttonMain" value="Cancelar">
+            </div>
+        </div>
+
+        <div id="invalido" class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    
+          <div class="offcanvas-body">
+             <h2>QR Code inválido ou já utilizado!</h2>
+            <br>
+    
+            <input id="restart" type="button" class="button" value="Reiniciar">
+            <input id="cancelar2" type="button" class="button" value="Cancelar">
+    
+            </div>
+          </div>
+    </div>
+    
+<script src="js/qr/qr-scanner.umd.min.js"></script>  
+<script> 
+
+$("#cancelar").click(function () {
+    window.location.replace("receberchoose.html");
+});
+
+$("#cancelar2").click(function () {
+    window.location.replace("receberchoose.html");
+});
+
+QrScanner.WORKER_PATH = 'js/qr/qr-scanner-worker.min.js';
+
+const video = document.getElementById('qr-video');
+var camQrResult = "";
+
+
+ function setResult(label, result) {
+    const qrCode = result;
+    scanner.stop();
+
+    getData();
+
+  async function getData() {
+    const data = {result};
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+    console.log(result)
+    const response = await fetch(server+'/qr', options);
+    const retorno = await response.json();
+    
+    var countKey = Object.keys(retorno).length;
+
+    if(countKey === 0){
+
+        var myOffcanvas = document.getElementById("invalido");
+        var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
+        bsOffcanvas.show();
+
+
+    } else {
+    var array = [];
+
+    var comp = retorno[0].comp;
+localStorage.setItem("varCompReceber",comp);
+window.location.replace("receber_final.html");
+}
+}
+}
+
+const scanner = new QrScanner(video, result => setResult(camQrResult, result), error => {
+    camQrResult.textContent = error;
+});
+
+window.scanner = scanner;
+
+scanner.start();
+
+$("#restart").click(function () {
+    location.reload();
+});
+createDiv();
+</script>
+</body>
+</html>

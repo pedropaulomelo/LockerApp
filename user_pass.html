@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Senha</title>
+<link rel="stylesheet" type="text/css" href="css/keyboard.css">
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+    <div class="headers"></div>
+    <div class="content">
+        <div id="title">
+            <h2>Digite sua senha:</h2>
+        </div>
+        <div id="text_input"> 
+            <input type="text" id="pass"><br><br>
+        </div>
+        <div id="keyboard">
+            <div class="virtual-keyboard"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="bottom_button">
+            <input id="confirmar" type="button" class="buttonMain" value="Confirmar">
+            <input id="voltar" type="button" class="buttonMain" value="Voltar">
+        </div>
+    </div>
+    </div>
+
+<script type="text/javascript" src="js/keyboard-initializer_numbers.js"></script>
+<script type="text/javascript" src="js/keyboard-handler.js"></script>
+
+<script> 
+$("#text_input").click(function () {
+    key_vis = true;
+    $text_input = $(this);
+    $keyboard = $text_input.next();
+    $keyboard.slideToggle(500, function () {
+    });
+});
+
+$("#confirmar").click(async function () {
+    var user = sessionStorage.getItem("userName");
+    var pass = $("#pass").val();
+
+    var get_ip = await fetch('https://api.ipify.org?format=json');
+    var ret = await get_ip.json();
+    var ip = ret.ip
+
+    const data = {user,pass,ip};
+    console.log(data)
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+
+    const response = await fetch(server+'/auth_user',options);
+    const retorno = await response.json();
+
+    console.log(retorno)
+    
+    var sessionUserId = retorno.sessionUserId;
+    var tokenUser = retorno.tokenUser;
+    var perfilUser = retorno.perfilUser;
+    var status = retorno.status;
+    var userLogged = retorno.user;
+
+   if(tokenUser && sessionUserId && status){
+       console.log("Autenticado")
+       sessionStorage.setItem("tokenUser",tokenUser);
+       sessionStorage.setItem("sessionUserId",sessionUserId);
+       sessionStorage.setItem("userLogged",userLogged);
+       sessionStorage.setItem("perfilUser",perfilUser);
+
+       $(".content").append(`
+       <div id="title">Autenticado!</div>
+       `)
+       setTimeout(()=>{
+           window.location.replace("gerenciar.html")
+       }, 1500)
+   } else {
+    console.log("Falha")
+    $(".content").append(`
+       <div id="title" class="warn">Falha na autenticação.<br>Tente novamente...</div>
+       `)
+       setTimeout(()=>{
+           window.location.replace("main.html");
+       }, 3000)
+   }
+});
+$("#voltar").click(function () {
+    window.location.replace("user_name.html");
+});
+
+createDiv();
+</script>
+</body>
+</html>

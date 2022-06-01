@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
+</head>
+<body>
+    <div class="back">
+        <div class="headers"></div>
+        <div class="content">
+            <div id="btns" class="btnfig">
+                <div id="btnsenha" class="btnMain"></div>
+                <div id="btnQR" class="btnMain"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="bottom_button">
+                <input id="voltar" type="button" class="buttonMain" value="Voltar">
+            </div>
+        </div>
+    </div>
+<script> 
+$("#btnsenha").click(function () {
+    window.location.replace("receber_senha.html");
+});
+$("#btnQR").click(function () {
+    window.location.replace("receber_qr.html");
+});
+$("#voltar").click(function () {
+    window.location.replace("main.html");
+});
+createDiv();
+</script>
+</body>
+</html>

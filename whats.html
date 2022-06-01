@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Document</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+            tel
+            <input type="text" id="number">
+            msg
+            <input type="text" id="msg">
+
+
+        <input id="confirmar" type="button" class="buttonMain" value="Confirmar">
+<script> 
+$("#confirmar").click(function () {
+    number = $("#number").val();
+    msg = $("#msg").val();
+    console.log("Numero: "+number+" e mensagem: "+msg);
+    whats();
+});
+async function whats(number,msg){
+  const response = await fetch('http://192.168.0.100:3333/sendText', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(
+        {
+            sessionName: "session1", 
+            number: '5531984729239',
+            text:"Hello\nWorld"
+        }
+    )
+  });
+  const content = await response.json();
+
+  console.log(content);
+};  
+
+</script>
+</body>
+</html>
