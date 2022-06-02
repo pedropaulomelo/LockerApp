@@ -70,14 +70,15 @@ $("#sim").click(function () {
     window.location.replace("main.html");
 });
 
-$("#confirmar").click(function () {
+$("#confirmar").click(async function () {
   const telefone = localStorage.getItem("varTelefone");
   const ap = localStorage.getItem("varAp");
   const comp = localStorage.getItem("varcompAbrir");
   const sms = ""; 
   const zap = "";
   const sit = "0";
-  const data = {telefone,ap,comp,sms,zap,sit};
+  var ip = await getIP();
+  const data = {telefone,ap,comp,sms,zap,sit,sessionId,token,ip};
   const options = {
       method: 'POST',
       headers: {

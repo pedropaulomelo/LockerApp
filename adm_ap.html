@@ -53,6 +53,7 @@
               </div>
             </div>      
 <script> 
+var ip = getIP();
 function clickAp(ValueAp) {
     console.log("Chegou")
     localStorage.setItem("varAp", ValueAp);
@@ -66,8 +67,18 @@ $("#sim").click(function () {
 async function loadPage(){
     const row_width = 4;
     const tab_height = 6;
+    var ip = getIP();
 
-    const response = await fetch(server+'/db_ap');
+    const data = {sessionId,token,ip};
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+
+    const response = await fetch(server+'/db_ap',options);
     const retorno = await response.json();
     console.log(retorno)
     console.log(retorno[0].ap)

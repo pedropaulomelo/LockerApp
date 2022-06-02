@@ -44,6 +44,7 @@
 
 
 <script> 
+var ip = getIP();
 var valueAp = localStorage.getItem("varAp");
 var valueCompSize = localStorage.getItem("varCompSize");
 var size_label;
@@ -89,8 +90,8 @@ $("#sim").click(function () {
 getData(valueCompSize);
 
 async function getData(size) {
-
-    const data_send = {size};
+    var ip = await getIP();
+    const data_send = {size,sessionId,token,ip};
     const options = {
       method: 'POST',
       headers: {
@@ -99,7 +100,7 @@ async function getData(size) {
       body: JSON.stringify(data_send)
     };
 
-const response = await fetch(server+'/db_comp',options);
+const response = await fetch(server+'/db_comp/disp',options);
 const data = await response.json();
 console.log(data)
 const length = data.length

@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"> 
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/auth_check_user.js"></script>
-<script type="text/javascript" src="js/clock.js"></script>
 </head>
 <body>
   <div class="back">
@@ -28,11 +27,18 @@
 
 
 <script>  
-$("#ajustebtn").click(function () {
+$("#ajustebtn").click(async function () {
     const ajuste = document.getElementById("ajuste").value;
     var novadata = new Date(ajuste);
     var newTime = novadata.getTime();
-    const data = {newTime};
+
+    sessionId = sessionStorage.getItem("sessionId");
+    token = sessionStorage.getItem("token");
+    var get_ip = await fetch('https://api.ipify.org?format=json');
+      var ret = await get_ip.json();
+      var ip = ret.ip
+
+    const data = {newTime,sessionId,token,ip};
     const options = {
         method: 'POST',
         headers: {

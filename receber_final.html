@@ -28,10 +28,9 @@
     </div>
     </div>
 <script> 
-
 async function openComp(open){
-
-const data = {open};
+    var ip = await getIP();
+const data = {open,sessionId,token,ip};
 console.log(data)
 const options = {
     method: 'POST',

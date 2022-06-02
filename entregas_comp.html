@@ -48,8 +48,9 @@ var response;
 var retorno;
 
 async function getComps(){
-    size = "P"
-    data = {size};
+    size = "P";
+    var ip = await getIP();
+    data = {size,sessionId,token,ip};
     options = {
       method: 'POST',
       headers: {
@@ -57,7 +58,7 @@ async function getComps(){
       },
       body: JSON.stringify(data)
     };
-    response = await fetch(server+'/db_comp',options)
+    response = await fetch(server+'/db_comp/disp',options)
     retorno = await response.json()
     console.log(retorno)
     if(retorno.length){
@@ -74,8 +75,9 @@ async function getComps(){
         `)  
     }
 
-    size = "M"
-    data = {size};
+    size = "M";
+    var ip = await getIP();
+    data = {size,sessionId,token,ip};
     options = {
       method: 'POST',
       headers: {
@@ -83,7 +85,7 @@ async function getComps(){
       },
       body: JSON.stringify(data)
     };
-    response = await fetch(server+'/db_comp',options)
+    response = await fetch(server+'/db_comp/disp',options)
     retorno = await response.json()
     console.log(retorno)
     if(retorno.length){
@@ -101,8 +103,9 @@ async function getComps(){
     }
 
 
-    size = "G"
-    data = {size};
+    size = "G";
+    var ip = await getIP();
+    data = {size,sessionId,token,ip};
     options = {
       method: 'POST',
       headers: {
@@ -110,7 +113,7 @@ async function getComps(){
       },
       body: JSON.stringify(data)
     };
-    response = await fetch(server+'/db_comp',options)
+    response = await fetch(server+'/db_comp/disp',options)
     retorno = await response.json()
     console.log(retorno)
     if(retorno.length){

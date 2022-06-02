@@ -12,20 +12,29 @@ setInterval(async function(){
 },
 100)
 
+async function getIP(){
+    var get_ip = await fetch('https://api.ipify.org?format=json');
+      var ret = await get_ip.json();
+      var ip = ret.ip
+      return ip
+  }
+
 auth_get();
+var sessionId;
+var token;
+var ip;
 
 async function auth_get(){
-    var sessionId = sessionStorage.getItem("sessionId");
-    var token = sessionStorage.getItem("token");
-     
-    var get_ip = await fetch('https://api.ipify.org?format=json');
-    var ret = await get_ip.json();
-    var ip = ret.ip
+    sessionId = sessionStorage.getItem("sessionId");
+    token = sessionStorage.getItem("token");
+    var ip = await getIP();
+
+    const data = {sessionId,token,ip}
 
     if(sessionId && token && ip){
         auth(sessionId,token,ip)
     } else {
-        //window.location.replace("login.html")
+        window.location.replace("login.html")
     }
 }
 
@@ -42,11 +51,11 @@ async function auth(sessionId,token,ip){
     console.log(data)
     const response = await fetch(server+'/auth_check',options);
     const retorno = await response.json();
-
+      console.log(retorno)
     const status = retorno;
 
     if(!status){
-        window.location.replace("login.html")
+       window.location.replace("login.html")
     } else if(status){
         return
     }
@@ -73,4 +82,4 @@ async function endSession(){
     const response = await fetch(server+'/endSession',options);
 }
 
-var server = 'https://interno.locker.coretechs.com.br'
+var server = "https://interno.locker.coretechs.com.br"

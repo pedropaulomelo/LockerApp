@@ -85,35 +85,10 @@ $("#sim").click(function () {
     window.location.replace("gerenciar.html");
 });
 
-getData(valueCompSize);
+getData();
 
-async function getData(size) {
-
-    const data_send = {size};
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data_send)
-    };
-
-const response = await fetch(server+'/db_comp',options);
-const data = await response.json();
-console.log(data)
-const length = data.length
-var array = [];
-
-for(i = 0; i < length; i++){
-    array.push(data[i].comp)
-}
-
-const random = Math.floor(Math.random() * array.length);
-
-var compAbrir = array[random];
-console.log(compAbrir)
-localStorage.setItem("varcompAbrir",compAbrir);
-
+async function getData() {
+   var varcompAbrir = localStorage.getItem("varCompReceber");
 }
 
 createDiv();

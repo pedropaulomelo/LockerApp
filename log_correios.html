@@ -41,6 +41,8 @@
     <script type="text/javascript" src="./js/FileSaver/FileSaver.min.js"></script>
 
     <script>
+var ip = getIP();
+
 var retorno;
 var count_campos = 0;
 
@@ -64,7 +66,16 @@ $('#filtro').append(`
 </div>
 `)  
 //-------------------FETCH SERVER PARA CARREGAR TODOS OS MESES -----------------
-const response = await fetch(server+'/db_ap');
+var ip = await getIP();
+const data_call = {sessionId,token,ip}
+const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data_call)
+};
+const response = await fetch(server+'/db_ap',options);
 const data = await response.json();
 //-------------------FOREACH PARA PREENCHER O SELECT COM OS FORNECEDORES-----------------
 data.forEach(function(ap){
@@ -144,17 +155,20 @@ async function search(){
 
     var route;
 
+    var ip = await getIP();
+    
 if(ap && !data_from){
-data = {ap}
-route = server+'/log/correios/ap'
+data = {ap,sessionId,token,ip}
+route = '/log/correios/ap'
 } else if(!ap && data_from){
-data = {data_from,data_to}
-route = server+'/log/correios/data'
+data = {data_from,data_to,sessionId,token,ip}
+route = '/log/correios/data'
 } else if(ap && data_from){
-data = {ap,data_from,data_to}
-route = server+'/log/correios/ap_data'
+data = {ap,data_from,data_to,sessionId,token,ip}
+route = '/log/correios/ap_data'
 } else {
-data = false;
+data = {sessionId,token,ip};
+route = '/log/correios'
 }
 
 const options = {
@@ -168,15 +182,10 @@ const options = {
 var response;
 
 
-if(data){
-    console.log(route)
-response = await fetch(route, options);
-} else {
-    response = await fetch(server+'/log/correios');   
-    retorno = await response.json();
-}
-
-    console.log(retorno)
+console.log(route)
+response = await fetch(server+route, options);
+retorno = await response.json();
+console.log(retorno)
 
 $('#table').append(`
 <div class="table-responsive">

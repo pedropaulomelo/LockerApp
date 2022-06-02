@@ -66,8 +66,16 @@ $("#sim").click(function () {
 async function loadPage(){
     const row_width = 4;
     const tab_height = 6;
-
-    const response = await fetch(server+'/db_ap');
+    var ip = await getIP();
+    const data_call = {sessionId,token,ip}
+const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data_call)
+};
+    const response = await fetch(server+'/db_ap',options);
     const retorno = await response.json();
     console.log(retorno)
     console.log(retorno[0].ap)

@@ -45,6 +45,7 @@
     
 
 <script> 
+var ip = getIP();
 
 var valuecompAbrir = localStorage.getItem("varcompAbrir");
 
@@ -53,7 +54,8 @@ var valuecompAbrir = localStorage.getItem("varcompAbrir");
 async function openComp(){
 
 var open = valuecompAbrir;
-const data = {open};
+var ip = await getIP();
+const data = {open,sessionId,token,ip};
 console.log(data)
 const options = {
     method: 'POST',
@@ -78,7 +80,8 @@ $("#confirmar").click(async function () {
   const telefone = localStorage.getItem("varTelefone");
   const ap = localStorage.getItem("varAp");
   const comp = localStorage.getItem("varcompAbrir");
-  const data = {telefone,ap,comp};
+  var ip = await getIP();
+  const data = {telefone,ap,comp,sessionId,token,ip};
   const options = {
       method: 'POST',
       headers: {

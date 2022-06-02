@@ -6,7 +6,7 @@ async function auth_check_user(){
     var get_ip = await fetch('https://api.ipify.org?format=json');
     var ret = await get_ip.json();
     var ip = ret.ip
-    const data = {sessionUserId,tokenUser,ip};
+    const data = {sessionUserId,tokenUser,sessionId,token,ip};
 
     const options = {
         method: 'POST',

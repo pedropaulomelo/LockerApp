@@ -32,13 +32,21 @@
 
 
 <script> 
-
 getData();
-
   async function getData() {
-  const response = await fetch(server+'/db_ap');
+    var ip = await getIP();
+    var data_call = {sessionId,token,ip}
+
+  const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data_call)
+};
+  const response = await fetch(server+'/db_ap',options);
   const data = await response.json();
-  
+  console.log(data)
   var length = data.length;
   const lista = document.createElement('div');
   $('#main').append(`
@@ -101,12 +109,12 @@ $('#btn_inserir').click(function(){
 $('#insert_ap_modal').modal('show');
 });
 
-function confirmar_insert_ap() {
+async function confirmar_insert_ap() {
     var ap = $('#ap_txt').val();
     var morador = $('#morador_txt').val();
     var tel = $('#tel_txt').val();
-
-    var data = {ap,morador,tel}
+    var ip = await getIP();
+    var data = {ap,morador,tel,sessionId,token,ip}
 
     const options = {
       method: 'POST',
@@ -188,15 +196,15 @@ function editar_div_clear(){
   $('#editar').html("");
 }
 
-function confirmar_editar_ap(){
+async function confirmar_editar_ap(){
   var ap = document.querySelector('#ap_txt').value;
   var morador = document.querySelector('#morador_txt').value;
   var tel = document.querySelector('#tel_txt').value;
+  var ip = await getIP();
 
   $('#editar_ap_modal').modal('hide');
   editar_clear();
-
-  var data = {ap,morador,tel}
+  var data = {ap,morador,tel,sessionId,token,ip}
 
   const options = {
       method: 'POST',
@@ -210,11 +218,11 @@ function confirmar_editar_ap(){
 
 }
 
-function deletar_ap(ap){
+async function deletar_ap(ap){
   $('#deletar_ap_modal').modal('hide');
   editar_clear();
-
-    var data = {ap}
+  var ip = await getIP();
+    var data = {ap,sessionId,token,ip}
 
     const options = {
       method: 'POST',

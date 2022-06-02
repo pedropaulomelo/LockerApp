@@ -31,12 +31,22 @@
     </div>
 
 <script> 
-
+  var ip = getIP();
 getData();
 
   async function getData() {
-    console.log("OK")
-  const response = await fetch(server+'/db_comp');
+   var ip = await getIP(); 
+  var data_call = {sessionId,token,ip}
+
+  const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data_call)
+};
+console.log(data_call)
+  const response = await fetch(server+'/db_comp',options);
   const data = await response.json();
   var length = data.length;
   console.log(data);
@@ -267,10 +277,10 @@ $(".btn_comp_bloquear").click(function () {
 });
 
 
-$("#offcanvasReceber").click(function () {
+$("#offcanvasReceber").click(async function () {
   var entregaId = localStorage.getItem("varEntregaId");
-
-  const data = {entregaId};
+  var ip = await getIP();
+  const data = {entregaId,sessionId,token,ip};
   const options = {
       method: 'POST',
       headers: {
@@ -286,8 +296,9 @@ $("#offcanvasReceber").click(function () {
 
 $("#sim_lock").click(async function () {
   var comp = localStorage.getItem("varCompLock")
-  var sit_pre = "L"
-  const data = {comp,sit_pre};
+  var sit_pre = "L";
+  var ip = await getIP();
+  const data = {comp,sit_pre,sessionId,token,ip};
   const options = {
       method: 'POST',
       headers: {
@@ -307,8 +318,9 @@ $("#offcanvasEntregar").click(function () {
 
 $("#sim_unlock").click(async function () {
   var comp = localStorage.getItem("varCompLock")
-  var sit_pre = "U"
-  const data = {comp,sit_pre};
+  var sit_pre = "U";
+  var ip = await getIP();
+  const data = {comp,sit_pre,sessionId,token,ip};
   const options = {
       method: 'POST',
       headers: {
@@ -322,8 +334,9 @@ $("#sim_unlock").click(async function () {
 
 $("#sim_open").click(async function () {
   var comp = localStorage.getItem("varCompReceber")
-  console.log(comp)
-  const data = {comp};
+  console.log(comp);
+  var ip = await getIP();
+  const data = {comp,sessionId,token,ip};
   const options = {
       method: 'POST',
       headers: {
@@ -364,9 +377,10 @@ $('#inserir').click(function(){
 $('#insert_comp_modal').modal('show');
 });
 
-function confirmar_insert(){
+async function confirmar_insert(){
   const size = document.querySelector('#size_select').value;
-  const data = {size};
+  var ip = await getIP();
+  const data = {size,sessionId,token,ip};
   const options = {
       method: 'POST',
       headers: {
@@ -422,13 +436,14 @@ $('#locker').click(async function(){
 $('#locker_modal').modal('show');
 });
 
-function alterar(){
+async function alterar(){
   const cod = document.querySelector('#cod_txt').value;
   const logradouro = document.querySelector('#logradouro_txt').value;
   const numero = document.querySelector('#numero_txt').value;
   const complemento = document.querySelector('#complemento_txt').value;
   const cep = document.querySelector('#cep_txt').value;
-  const data = {cod,logradouro,numero,complemento,cep};
+  var ip = await getIP();
+  const data = {cod,logradouro,numero,complemento,cep,sessionId,token,ip};
   console.log(data)
   const options = {
       method: 'POST',

@@ -36,7 +36,17 @@
 getData();
 
   async function getData() {
-  const response = await fetch(server+'/db_users');
+    var ip = await getIP();
+    var data_call = {sessionId,token,ip}
+    var options_call = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data_call)
+      };
+
+  const response = await fetch(server+'/db_users',options_call);
   const data = await response.json();
   
   var length = data.length;
@@ -104,11 +114,11 @@ $('#btn_inserir').click(function(){
 $('#insert_user_modal').modal('show');
 });
 
-function confirmar_insert_ap() {
+async function confirmar_insert_ap() {
     var user = $('#user_txt').val();
     var perfil = $('#perfil_txt').val();
-
-    var data = {user,perfil}
+    var ip = await getIP();
+    var data = {user,perfil,sessionId,token,ip}
 
     const options = {
       method: 'POST',
@@ -185,15 +195,15 @@ function editar_user(id_raw,start) {
 $('#editar_user_modal').modal('show');
 };
 
-function confirmar_editar_user(){
+async function confirmar_editar_user(){
   var id = document.querySelector('#id_txt').value;
   var user = document.querySelector('#user_txt').value;
   var perfil = document.querySelector('#perfil_txt').value;
-
+  var ip = await getIP();
   $('#editar_user_modal').modal('hide');
   editar_clear();
 
-  var data = {id,user,perfil}
+  var data = {id,user,perfil,sessionId,token,ip}
 
   const options = {
       method: 'POST',
@@ -207,11 +217,11 @@ function confirmar_editar_user(){
 
 }
 
-function deletar_user(id){
+async function deletar_user(id){
   $('#deletar_user_modal').modal('hide');
   editar_clear();
-
-    var data = {id}
+  var ip = await getIP();
+    var data = {id,sessionId,token,ip}
 
     const options = {
       method: 'POST',
@@ -229,8 +239,9 @@ function editar_clear(){
 }
 
 async function pass_user(id,start){
-    var data = {id}
-console.log(data)
+  var ip = await getIP();
+    var data = {id,sessionId,token,ip}
+
     const options = {
       method: 'POST',
       headers: {
@@ -239,7 +250,7 @@ console.log(data)
       body: JSON.stringify(data)
     };
     
-    const response = await fetch(server+'/db_users',options);
+    const response = await fetch(server+'/db_users/pass',options);
     const retorno = await response.json();
     console.log(retorno);
 

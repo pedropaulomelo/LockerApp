@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
-<script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/endSessionUser.js"></script>
 </head>
 <body>
     <div class="back">
@@ -39,6 +39,7 @@
 <script type="text/javascript" src="js/keyboard-handler.js"></script>
 
 <script> 
+var server = "https://interno.locker.coretechs.com.br"
 var locker;
 getLocker()
 async function  getLocker(){
@@ -108,11 +109,6 @@ $("#voltar").click(function () {
     window.location.replace("correio_credencial.html");
 });
 
-$("#teste").click(async function () {
-    const response = await fetch(server+'/sessions')
-    const retorno = await response.json();
-    console.log(retorno)
-});
 </script>
 </body>
 </html>

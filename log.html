@@ -39,7 +39,7 @@
     <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <script>
-
+var ip = getIP();
 var count_campos = 0;
 
 async function search_alert(message) {
@@ -62,7 +62,16 @@ $('#filtro').append(`
 </div>
 `)  
 //-------------------FETCH SERVER PARA CARREGAR TODOS OS MESES -----------------
-const response = await fetch(server+'/db_ap');
+var ip = await getIP();
+const data_call = {sessionId,token,ip}
+const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data_call)
+};
+const response = await fetch(server+'/db_ap',options);
 const data = await response.json();
 //-------------------FOREACH PARA PREENCHER O SELECT COM OS FORNECEDORES-----------------
 data.forEach(function(ap){
@@ -142,18 +151,19 @@ async function search(){
 
     clear_lupa("select_Apartamento");
     clear_lupa("select_Data");
-
+    var ip = await getIP();
 if(ap && !data_from){
-data = {ap}
-route = server+'/log/ap'
+data = {ap,sessionId,token,ip}
+route = '/log/ap'
 } else if(!ap && data_from){
-data = {data_from,data_to}
-route = server+'/log/data'
+data = {data_from,data_to,sessionId,token,ip}
+route = '/log/data'
 } else if(ap && data_from){
-data = {ap,data_from,data_to}
-route = server+'/log/ap_data'
+data = {ap,data_from,data_to,sessionId,token,ip}
+route = '/log/ap_data'
 } else {
-data = false;
+data = {sessionId,token,ip};
+route = '/log'
 }
 
 const options = {
@@ -167,12 +177,8 @@ const options = {
 var response;
 var retorno;
 
-if(data){
-console.log(data)
-response = await fetch(route, options);
-} else {
-    response = await fetch(server+'/log');   
-}
+console.log(route)
+response = await fetch(server+route, options);
 retorno = await response.json();
 console.log(retorno)
 

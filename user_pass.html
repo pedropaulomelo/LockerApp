@@ -48,12 +48,9 @@ $("#text_input").click(function () {
 $("#confirmar").click(async function () {
     var user = sessionStorage.getItem("userName");
     var pass = $("#pass").val();
+    var ip = await getIP();
 
-    var get_ip = await fetch('https://api.ipify.org?format=json');
-    var ret = await get_ip.json();
-    var ip = ret.ip
-
-    const data = {user,pass,ip};
+    const data = {user,pass,sessionId,token,ip};
     console.log(data)
     const options = {
       method: 'POST',

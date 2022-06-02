@@ -65,7 +65,7 @@ app.on("activate", () => {
 
 
 const express = require('express');
-const SerialPort = require("serialport");
+//const SerialPort = require("serialport");
 //const Readline = require("@serialport/parser-readline");
 //const port = new SerialPort({path: "COM9", baudRate: 115200});
 const back = express();
@@ -80,11 +80,3 @@ back.post('/open', (request, response) => {
     console.log(status);
   });
 });
-
-back.get('/close', (request, response) => {
-console.log(win)
-var ok = "ok";
-var data = {ok}
-response.json(win)
-});
-  

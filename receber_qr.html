@@ -42,6 +42,7 @@
     
 <script src="js/qr/qr-scanner.umd.min.js"></script>  
 <script> 
+var ip = getIP();
 
 $("#cancelar").click(function () {
     window.location.replace("receberchoose.html");
@@ -64,7 +65,8 @@ var camQrResult = "";
     getData();
 
   async function getData() {
-    const data = {result};
+    var ip = await getIP();
+    const data = {result,sessionId,token,ip};
     const options = {
       method: 'POST',
       headers: {
