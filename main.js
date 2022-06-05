@@ -23,8 +23,8 @@ function createWindow() {
     frame: false,
     webPreferences: {
       // habilita a integração do Node.js no FrontEnd
-      nodeIntegration: true,
-      contextIsolation:true
+      nodeIntegration: true, // to allow require
+      contextIsolation: false, // allow use with Electron 12+
     },
   });
 
@@ -63,20 +63,50 @@ app.on("activate", () => {
   }
 });
 
-
+const { response } = require('express');
 const express = require('express');
-//const SerialPort = require("serialport");
-//const Readline = require("@serialport/parser-readline");
-//const port = new SerialPort({path: "COM9", baudRate: 115200});
-const back = express();
-back.listen(3000, () => console.log('listening at 3000'));
+const res = require('express/lib/response');
 
-back.post('/open', (request, response) => {
-  const comp = request.body.comp;
-  port.write("o:"+comp);
-  console.log("open:"+comp);
-  parser.on("data", (line) => {
-    const status = ""+line; 
-    console.log(status);
+const {SerialPort} = require("serialport");
+const { ReadlineParser } = require('@serialport/parser-readline')
+const port = new SerialPort({path: "COM9", baudRate: 9600});
+const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
+//const parser = new ReadlineParser();
+//port.pipe(parser);
+
+const server = express();
+
+server.listen(3000, () => console.log('listening at 3000'));
+
+
+//server.post('/status', async (request, response) => {
+  //const data = request.body;
+  //const comp = data.open;
+  //port.write("status:"+comp);
+  //console.log("status:"+comp);
+  //parser.on("data", (line) => {
+  //  const status = line;
+  //  console.log(status);
+  //  if(status === "open"){
+  //    console.log("Já está aberto");
+  //    } else {
+  //      if(status === "close"){
+  //        console.log("Abrindo...");
+  //      }
+  //    }
+  //  });
+  //}); 
+
+  server.post('/open', async (request, response) => {
+  //console.log(request.body)
+  //const comp = request.body.comp;
+  port.write("o:1")
+  //port.write("o:"+comp);
+  //console.log("open:"+comp);
+  parser.on("data", async function(line){
+  //  const status = ""+line; 
+    console.log(line);
+    await response.json(line)
   });
 });
+

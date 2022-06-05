@@ -16,6 +16,6 @@ async function endSessionUser(){
       body: JSON.stringify(data)
     };
 
-    fetch(server+'/endSession_user',options)
+    fetch("https://interno.locker.coretechs.com.br/endSession_user",options)
 }
 endSessionUser();
