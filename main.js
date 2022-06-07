@@ -2,10 +2,10 @@ const { app, BrowserWindow, nativeImage } = require("electron");
 
 // Habilita o live reload no Electron e no FrontEnd da aplicação com a lib electron-reload
 // Assim que alguma alteração no código é feita
-require("electron-reload")(__dirname, {
+//require("electron-reload")(__dirname, {
   // Note that the path to electron may vary according to the main file
-  electron: require(`${__dirname}/node_modules/electron`),
-});
+//  electron: require(`${__dirname}/node_modules/electron`),
+//});
 
 // Função que cria uma janela desktop
 function createWindow() {
@@ -97,16 +97,14 @@ server.listen(3000, () => console.log('listening at 3000'));
   //  });
   //}); 
 
-  server.post('/open', async (request, response) => {
-  //console.log(request.body)
-  //const comp = request.body.comp;
-  port.write("o:1")
-  //port.write("o:"+comp);
-  //console.log("open:"+comp);
-  parser.on("data", async function(line){
-  //  const status = ""+line; 
-    console.log(line);
-    await response.json(line)
-  });
+  server.post('/open/:tagComp', async (request, response) => {
+    var comp = request.params.tagComp;
+    console.log(comp)
+  port.write("o:"+comp);
+  console.log("open:"+comp);
+  //parser.on("data", async function(line){
+    //const status = ""+line; 
+    //console.log(line);
+    //await response.json(line)
+  //});
 });
-

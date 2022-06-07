@@ -1,7 +1,7 @@
 {
   "name": "app_locker",
   "version": "1.0.0",
-  "description": "",
+  "description": "Locker app",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js"
@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/pedropaulomelo/LockerApp.git"
   },
-  "author": "",
+  "keywords": [
+    "Locker"
+  ],
+  "author": "Pedro Paulo Martins de Melo",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/pedropaulomelo/LockerApp/issues"
@@ -19,7 +22,6 @@
   "devDependencies": {
     "@serialport/parser-readline": "^10.3.0",
     "electron": "^19.0.3",
-    "electron-reload": "^2.0.0-alpha.1",
     "express": "^4.18.1",
     "serialport": "^10.4.0"
   }

@@ -343,7 +343,9 @@ $("#sim_open").click(async function () {
       },
       body: JSON.stringify(data_comp)
     };
-    const response = await fetch('http://localhost:3000/open', options);
+    var route = 'http://localhost:3000/open/'+comp;
+    console.log(route)
+    const response = await fetch(route, options);
     const retorno = await response.json();
     console.log(retorno)
 });
