@@ -9,6 +9,10 @@
 <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
 <script type="text/javascript" src="js/clock.js"></script>
 <script type="text/javascript" src="js/endSessionUser.js"></script>
+
+<link href="http://fonts.cdnfonts.com/css/lemonmilk" rel="stylesheet">
+<style>@import url('http://fonts.cdnfonts.com/css/lemonmilk');</style>
+
 </head>
 <body>
     <div class="back">
@@ -21,8 +25,8 @@
         </div>
         <div class="footer">
             <div class="bottom_button">
-                <input id="voltar" type="button" class="buttonMain" value="Voltar">
-                <input type="button" class="buttonMain" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Cancelar">
+                <div id="voltar" class="buttonMain"></div>
+                <div id="cancelar" class="buttonMain" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"></div>
             </div>
         </div>
 
@@ -42,29 +46,16 @@
 <script> 
 
 var size;
-var options;
-var data;
-var response;
-var retorno;
 
 async function getComps(){
-    size = "P";
-    var ip = await getIP();
-    data = {size,sessionId,token,ip};
-    options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
-    response = await fetch(server+'/db_comp/disp',options)
-    retorno = await response.json()
+    ipcRenderer.send('get_compDisp','P');
+    ipcRenderer.on('get_compDispP_response',(event,response)=>{
+    var retorno = JSON.parse(response);
     console.log(retorno)
     if(retorno.length){
         $('#comp_push').append(`
         <div class="caixa" value="P">
-           <img src="css/caixa_p.png" id="P" onclick="clickCaixa(this.id)">
+           <img src="assets/P.png" id="P" onclick="clickCaixa(this.id)">
        </div>
         `)
     } else {
@@ -74,24 +65,16 @@ async function getComps(){
        </div>
         `)  
     }
+    })
 
-    size = "M";
-    var ip = await getIP();
-    data = {size,sessionId,token,ip};
-    options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
-    response = await fetch(server+'/db_comp/disp',options)
-    retorno = await response.json()
+    ipcRenderer.send('get_compDisp','M');
+    ipcRenderer.on('get_compDispM_response',(event,response)=>{
+    var retorno = JSON.parse(response);
     console.log(retorno)
     if(retorno.length){
         $('#comp_push').append(`
         <div class="caixa" value="M">
-           <img src="css/caixa_m.png" id="M" onclick="clickCaixa(this.id)">
+           <img src="assets/M.png" id="M" onclick="clickCaixa(this.id)">
        </div>
         `)
     } else {
@@ -101,25 +84,16 @@ async function getComps(){
        </div>
         `)  
     }
+    })
 
-
-    size = "G";
-    var ip = await getIP();
-    data = {size,sessionId,token,ip};
-    options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
-    response = await fetch(server+'/db_comp/disp',options)
-    retorno = await response.json()
+    ipcRenderer.send('get_compDisp','G');
+    ipcRenderer.on('get_compDispG_response',(event,response)=>{
+    var retorno = JSON.parse(response);
     console.log(retorno)
     if(retorno.length){
         $('#comp_push').append(`
         <div class="caixa" value="G">
-           <img src="css/caixa_g.png" id="G" onclick="clickCaixa(this.id)">
+           <img src="assets/G.png" id="G" onclick="clickCaixa(this.id)">
        </div>
         `)
     } else {
@@ -129,6 +103,8 @@ async function getComps(){
        </div>
         `)  
     }
+})
+
 }
 
 getComps()

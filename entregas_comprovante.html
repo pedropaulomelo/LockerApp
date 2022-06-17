@@ -4,9 +4,14 @@
 <meta charset="UTF-8"/>
 <title>Document</title>
 <link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/clock.js"></script>
 <script type="text/javascript" src="js/endSessionUser.js"></script>
+
+<link href="http://fonts.cdnfonts.com/css/lemonmilk" rel="stylesheet">
+<style>@import url('http://fonts.cdnfonts.com/css/lemonmilk');</style>
+
 </head>
 <body>
     <div class="back">
@@ -14,7 +19,7 @@
         <div class="content">
             <div id="titleComprovante"></div>
             <div id="quadro_comprovante">
-                <container id="divComprovante">
+                <div id="divComprovante">
                     <div id="txtEnd"></div>
                     <div id="txtCep"></div>
                     <div id="txtTelefone"></div>
@@ -22,21 +27,22 @@
                     <div id="txtAp"></div>
                     <div id="txtData"></div>
                     <div id="txtEntrega"></div>
-                </container>
+                </div>
             </div>
         </div>
         <div class="footer">
             <div class="bottom_button">
-                <input id="finalizar" type="button" class="buttonMain" value="Finalizar">
+                <div id="finalizar" class="buttonMain"></div>
             </div>
         </div>      
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
 <script> 
 
-async function getData(){
-const resp_end = await fetch(server+'/locker');
-const data_endereco = await resp_end.json();
+function getData(){
+ipcRenderer.send('get_locker','GET');
+ipcRenderer.on(`get_locker_response`,(event,response)=>{
+var data_endereco = JSON.parse(response);
 
 const locker = data_endereco[0].cod;
 const logradouro = data_endereco[0].logradouro;
@@ -68,31 +74,13 @@ $("#txtComp").html(valuecompAbrir);
 $("#txtAp").html(valueAp);
 $("#txtData").html(valueDate);
 $("#txtEntrega").html(valueEntrega);
+})
 }
+
 getData();
 
 $("#sim").click(function () {
     window.location.replace("main.html");
-});
-
-$("#confirmar").click(async function () {
-  const telefone = localStorage.getItem("varTelefone");
-  const ap = localStorage.getItem("varAp");
-  const comp = localStorage.getItem("varcompAbrir");
-  const sms = ""; 
-  const zap = "";
-  const sit = "0";
-  var ip = await getIP();
-  const data = {telefone,ap,comp,sms,zap,sit,sessionId,token,ip};
-  const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
-    const response =  fetch(server+'/db_entregas', options);
-    console.log("Postado");
 });
 
 $("#finalizar").click(function () {

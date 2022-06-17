@@ -8,7 +8,12 @@
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js"></script>
 <script type="text/javascript" src="js/clock.js"></script>
+<script type="text/javascript" src="js/zap.js"></script>
 <script type="text/javascript" src="js/endSessionUser.js"></script>
+
+<link href="http://fonts.cdnfonts.com/css/lemonmilk" rel="stylesheet">
+<style>@import url('http://fonts.cdnfonts.com/css/lemonmilk');</style>
+
 </head>
 <body>
     <div class="back">
@@ -26,8 +31,8 @@
         </div></div>
         <div class="footer">
             <div class="bottom_button">
-                <input id="confirmar" type="button" class="buttonMain" value="Confirmar">
-                <input type="button" class="buttonMain" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Cancelar">
+                <div id="confirmar" class="buttonMain"></div>
+                <div id="btnencerrar" class="buttonMain" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"></div>
             </div>
         </div>
 
@@ -45,31 +50,23 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>  
 
 <script> 
-var ip = getIP();
 
 var valuecompAbrir = localStorage.getItem("varcompAbrir");
 
 openComp();
 
 async function openComp(){
-
-var open = valuecompAbrir;
-var ip = await getIP();
-const data = {open,sessionId,token,ip};
-console.log(data)
-const options = {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-    };
-    var route = 'http://localhost:3000/open/'+open
-    const response = await fetch(route, options);
-    const retorno = await response.json();
-    console.log(retorno);
+var comp = valuecompAbrir;
+ipcRenderer.send('get_open', comp);
+ipcRenderer.on('get_open_response', (event,response) => {
+    if(!response){
+    $("#textcompAbrir").html("Falha!");
+    setTimeout(()=>{
+        window.location.replace("entregas_conf.html")
+    },1500)
 }
-
+});
+}
 
 $("#textcompAbrir").html(valuecompAbrir);
 
@@ -78,26 +75,28 @@ $("#sim").click(function () {
 });
 
 $("#confirmar").click(async function () {
-  const telefone = localStorage.getItem("varTelefone");
-  const ap = localStorage.getItem("varAp");
-  const comp = localStorage.getItem("varcompAbrir");
-  var ip = await getIP();
-  const data = {telefone,ap,comp,sessionId,token,ip};
-  const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
-    const response =  await fetch(server+'/db_entregas', options);
-    const retorno = await response.json();
-
-    var entregaId = retorno["entregaId"];
-    
-    localStorage.setItem("varEntregaId",retorno["entregaId"]);
-    window.location.replace("entregas_comprovante.html");
-
+  var telefone = localStorage.getItem("varTelefone");
+  var  ap = localStorage.getItem("varAp");
+  var comp = localStorage.getItem("varcompAbrir");
+  const data = {telefone,ap,comp};
+  const request = JSON.stringify(data);
+  console.log(request)  
+  ipcRenderer.send('get_entrega', request);
+  ipcRenderer.on('get_entrega_response', async (event,response) => {
+    var retorno = JSON.parse(response);
+    var data_qr = retorno.data_qr;
+    var data_zap = retorno.data_zap;
+    var entregaId = data_qr.entregaId;
+    var number = data_zap.number;
+    var pass = data_zap.pass;
+    var url = data_zap.url;
+    localStorage.setItem("varEntregaId",entregaId);
+    await qrGen(data_qr)
+    await whatstxt(comp,number);
+    await whatspass(pass,number);
+    await whatsQR(url,number);
+    window.location.replace("entregas_comprovante.html"); 
+  })   
 });
 
 createDiv();

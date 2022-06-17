@@ -5,14 +5,13 @@ align-items: center;
 }
 
 #StartScreen{
-    background-image: url(StartScreen.png);
+    background-image: url(../assets/Inicial.png);
     background-repeat: no-repeat;
     width: 1024px;
     height: 600px;
     display: flex;
     flex-direction: column;
     justify-content: top;
-    margin-top: -2px;
 }
 
 .headers{
@@ -24,18 +23,15 @@ align-items: center;
 }
 
 #clock{
-    opacity: 70%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 21px;
-    font-weight: bold;
-    background-color: white;
-    box-shadow: inset;
-    color:#003057;
+    font-size: 30px;
+    color:white;
     text-align:center;
     margin:5%;
-    width: 240px;
-    height: 28px;
-    box-shadow: 0 0 .3em gray, 0 0 .3em white;
-}
+    width: auto;
+    position: relative;
+    bottom: 25px;
+    left: 25px;
+  }

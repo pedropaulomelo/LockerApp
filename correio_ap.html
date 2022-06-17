@@ -9,12 +9,15 @@
 <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.js">   
 </script><script type="text/javascript" src="js/clock.js"></script>
 <script type="text/javascript" src="js/endSessionUser.js"></script>
+
+<link href="http://fonts.cdnfonts.com/css/lemonmilk" rel="stylesheet">
+<style>@import url('http://fonts.cdnfonts.com/css/lemonmilk');</style>
 </head>
 <body>
     <div class="back">
         <div class="headers"></div>
         <div class="content">
-            <div id="title">
+            <div id="titleAp">
                 <h2>Selecione o apartamento:</h2>
             </div>
             <div id="Carrosel">    
@@ -38,7 +41,7 @@
         </div>
         <div class="footer">
             <div class="bottom_button">
-                <input type="button" class="button" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" value="Cancelar">
+                <div id="cancelar" class="button" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"></div>
             </div>
         </div>
 </div> 
@@ -68,21 +71,9 @@ async function loadPage(){
     const row_width = 4;
     const tab_height = 6;
 
-    var ip = await getIP();
-    var data = {sessionId,token,ip}
-    console.log(data)
-    const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      };
-    
-    const response = await fetch(server+'/db_ap',options);
-    const retorno = await response.json();
-    console.log(retorno)
-    console.log(retorno[0].ap)
+    ipcRenderer.send('get_apartamentos', 'GET');
+    ipcRenderer.on('get_apartamentos_response', (event, response) => {
+        var retorno = JSON.parse(response);
     
     const length = retorno.length;
     const total_rows = Math.ceil(length/row_width); 
@@ -140,6 +131,7 @@ async function loadPage(){
     }
     }
 
+    })
 }
 loadPage();
 

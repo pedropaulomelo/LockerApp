@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <title>Receber encomenda</title>
 <link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/clock.js"></script>
 <script type="text/javascript" src="js/endSessionUser.js"></script>
@@ -23,7 +24,7 @@
     </div>
     <div class="footer">
         <div class="bottom_button">
-            <input id="encerrar" type="button" class="buttonMain" value="Encerrar">
+            <div id="encerrar" type="button" class="buttonMain"></div>
         </div>
     </div>
     </div>
@@ -31,8 +32,7 @@
 <script> 
 
 async function openComp(comp){
-    var ip = await getIP();
-const data = {open,sessionId,token,ip};
+const data = {comp};
 console.log(data)
 const options = {
     method: 'POST',
@@ -41,7 +41,7 @@ const options = {
     },
     body: JSON.stringify(data)
     };
-    var route = 'http://localhost:3000/open/'+comp;
+    var route = 'http://localhost:3000/open/';
     const response = await fetch(route, options);
     const retorno = await response.json();
     console.log(retorno);

@@ -24,8 +24,8 @@
     </div>
     <div class="footer">
       <div class="bottom_button">  
-        <input id="btn_voltar" type="button" class="buttonMain" value="Voltar">
-        <input id="btn_inserir" type="button" class="buttonMain" value="Inserir">
+        <div id="btn_voltar" class="buttonMain"></div>
+        <div id="btn_inserir" class="buttonMain"></div>
       </div>
     </div>
     </div>
@@ -63,7 +63,7 @@ getData();
     $('#accordionExample').append(`
             <div class="accordion-item">
               <h2 class="accordion-header" id="acordion${dataString.id}">
-                <button id="btn_acordion${dataString.id}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${dataString.id}" aria-expanded="false" aria-controls="collapse${dataString.id}">
+                <button id="btn_acordion${dataString.id}" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse${dataString.id}" aria-expanded="false" aria-controls="collapse${dataString.id}">
                   <div id="id${dataString.id}" class="id_item">${dataString.id}</div>
                   <div id="user${dataString.id}" class="user_item">${dataString.user}</div>
                   <div id="perfil${dataString.id}" class="perfil_item">${dataString.perfil}</div>
@@ -71,9 +71,9 @@ getData();
               </h2>
               <div id="collapse${dataString.id}" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionExample">
                 <div id="acordion_body${dataString.id}" class="accordion-body">
-                  <input type="button" id="btn_editar_${dataString.id}" class="buttonComp"  href="#" role="button" value="Editar" onclick="editar_user(this.id,11)">
-                  <input type="button" id="btn_deletar_${dataString.id}" class="buttonComp"  href="#" role="button" value="Apagar" onclick="confirmar_deletar_user(this.id,12)">
-                  <input type="button" id="btn_pass_${dataString.id}" class="buttonComp"  href="#" role="button" value="Senha" onclick="confirma_pass_user(this.id,9)">
+                  <input id="btn_editar_${dataString.id}" class="buttonComp"  href="#" role="button" value="Editar" onclick="editar_user(this.id,11)">
+                  <input id="btn_deletar_${dataString.id}" class="buttonComp"  href="#" role="button" value="Apagar" onclick="confirmar_deletar_user(this.id,12)">
+                  <input id="btn_pass_${dataString.id}" class="buttonComp"  href="#" role="button" value="Senha" onclick="confirma_pass_user(this.id,9)">
                 </div>
               </div>  
             </div>
@@ -91,7 +91,7 @@ $('#btn_inserir').click(function(){
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="staticBackdropLabel">Novo Usuário</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         Apartamento
@@ -104,8 +104,8 @@ $('#btn_inserir').click(function(){
         </select>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="confirmar_insert_ap()">Inserir</button>
+        <button class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="confirmar_insert_ap()">Inserir</button>
       </div>
     </div>
   </div>
@@ -140,14 +140,14 @@ function confirmar_deletar_user(id_raw,start){
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="staticBackdropLabel">Editar Apartamento</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
         Está certo de que deseja apagar o cadastro do Usuário ${id}?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Cancelar</button>
-          <button type="button" id="${id}" class="btn btn-sm btn-outline-secondary" onclick="deletar_user(this.id)">Sim</button>
+          <button class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Cancelar</button>
+          <button id="${id}" class="btn btn-sm btn-outline-secondary" onclick="deletar_user(this.id)">Sim</button>
         </div>
       </div>
     </div>
@@ -174,7 +174,7 @@ function editar_user(id_raw,start) {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="staticBackdropLabel">Contrato</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         Apartamento
@@ -185,8 +185,8 @@ function editar_user(id_raw,start) {
         <input type="text" id="perfil_txt" class="txt" value="${perfil}">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="confirmar_editar_user()">Editar</button>
+        <button class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Fechar</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="confirmar_editar_user()">Editar</button>
       </div>
     </div>
   </div>
@@ -275,14 +275,14 @@ $('#editar').append(`
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="staticBackdropLabel">Senha de Usuário</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         Você confirma a necessidade de visualizar a senha do usuário ${id}? 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Não</button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="pass_user(${id},${start})">Sim</button>
+        <button class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal" onclick="editar_clear()">Não</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="pass_user(${id},${start})">Sim</button>
       </div>
     </div>
   </div>

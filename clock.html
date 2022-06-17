@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="css/styleMain.css">
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"> 
 <script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/auth_check_user.js"></script>
+<!--<script type="text/javascript" src="js/auth_check_user.js"></script>-->
 </head>
 <body>
   <div class="back">
@@ -18,35 +18,24 @@
       </div>
       </div>
     <div class="footer">
-      <input type="button" id="voltar" class="buttonMain" value="Voltar">
-      <input type="button" id="ajustebtn" class="buttonMain" value="Ajustar">
-      <input type="button" id="ajustebtn_auto" class="buttonMain" value="Automático">
+      <div id="voltar" class="buttonMain"></div>
+      <div id="ajustebtn" class="buttonMain"></div>
+      <div id="ajustebtn_auto" class="buttonMain"></div>
     </div>
     </div>
   
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
 <script>  
+
+const {ipcRenderer} = require('electron');
+
 $("#ajustebtn").click(async function () {
     const ajuste = document.getElementById("ajuste").value;
     var novadata = new Date(ajuste);
     var newTime = novadata.getTime();
-
-    sessionId = sessionStorage.getItem("sessionId");
-    token = sessionStorage.getItem("token");
-    var get_ip = await fetch('https://api.ipify.org?format=json');
-      var ret = await get_ip.json();
-      var ip = ret.ip
-
-    const data = {newTime,sessionId,token,ip};
-    const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      };
-      const response =  fetch(server+'/clock/adjust', options);   
+    
+    ipcRenderer.send('get_clockAdjust',newTime);   
 });
 
 getData();
@@ -54,18 +43,19 @@ setInterval(getData,1000);
 
 
   async function getData() {
-  const response = await fetch(server+'/clock');
-  const data = await response.json();
-  
-  const date = new Date(data);
-  const clock = date.toLocaleDateString() + " - " + date.toLocaleTimeString()
-  
+  ipcRenderer.send('get_clock','GET');  
+  ipcRenderer.on('get_clock_response', (event, clocktime) => {
+    var clock = new Date(clocktime).toLocaleDateString() + " - " + new Date(clocktime).toLocaleTimeString();
+    $('#hora').text(clock);
+})  
+};
 
- document.getElementById("hora").innerHTML = clock;
-  };
-
-  $("#ajustebtn_auto").click(function () {
-      const response =  fetch(server+'/clock/adjust/auto');   
+  $("#ajustebtn_auto").click(async function () {
+  var send = await fetch('https://worldtimeapi.org/api/ip');
+  var timestamp = await send.json();
+  var newDateTime = timestamp.datetime;
+  var newTime = Date.parse(newDateTime)
+  ipcRenderer.send('get_clockAdjustAuto', newTime);   
 });
 
 $("#voltar").click(function () {

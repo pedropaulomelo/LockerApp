@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <title>Receber como Administrador</title>
 <link rel="stylesheet" type="text/css" href="css/styleMain.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/clock.js"></script>
 <script type="text/javascript" src="js/auth_check_user.js"></script>
@@ -23,7 +24,7 @@
     </div>
     <div class="footer">
         <div class="bottom_button">
-            <input id="encerrar" type="button" class="buttonMain" value="Encerrar">
+            <div id="encerrar" class="buttonMain"></div>
         </div>
     </div>
     </div>
@@ -31,20 +32,10 @@
 <script> 
 
 async function openComp(comp){
-    var ip = await getIP();
-const data = {open,sessionId,token,ip};
-console.log(data)
-const options = {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-    };
-    var route = 'http://localhost:3000/open/'+comp;
-    const response = await fetch(route, options);
-    const retorno = await response.json();
-    console.log(retorno);
+    ipcRenderer.send('get_open', comp)
+    ipcRenderer.on('get_open_response', (event, response) => {
+        console.log(response)
+    })
 }
 
 var comp = localStorage.getItem("varCompReceber");

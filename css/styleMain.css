@@ -5,7 +5,7 @@ body {
 }
 
 .back{
-    background-image: url(background_coretechs.png);
+    background-image: url(../assets/Tela\ 2.png);
     background-repeat: no-repeat;
     width: 1024px;
     height: 600px;
@@ -15,7 +15,7 @@ body {
 }
 .headers{
     width: 100%;
-    height: 20%;
+    height: 27%;
     display: flex;
     flex-direction: row;
     justify-content: end;
@@ -23,7 +23,7 @@ body {
 
 .content{
     width: 100%;
-    height: 65%;
+    height: 58%;
     display: flex;
     flex-direction: column;
     justify-content: center; 
@@ -51,6 +51,9 @@ body {
     flex-direction: row;
     justify-content: center;
     width: 100%;
+    position: absolute;
+    top: 185px;
+    opacity: 65%;
 }
 
 .caixatxtMain{
@@ -60,7 +63,7 @@ body {
     font-size:20pt;
 }
 
-#senha{
+#telefone,#user,#senhauser,#senha,#pass{
     border-radius: 5px;
     height:50px;    
     width: 627px;
@@ -115,11 +118,21 @@ body {
     width: 160px;   
     height: 50px;
     line-height: 30px;
-    background-color: white;
-    font-family:verdana;
+    background-color: rgba(255,255,255,0.6);
     font-size: 22px;
     font-weight: bold;
-    color:#003057  
+    color:white;  
+    text-shadow: 2px 2px 18px gray;
+    box-shadow: 15px 15px 30px -15px gray;
+    border-style: none;
+    font-family: 'Lemon/Milk light';
+}
+
+.ap_button:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
+    box-shadow: 0px 0px 30px -15px gray;
 }
 
 #buttons{
@@ -150,6 +163,24 @@ body {
     width: 100%;
     color: white;
     text-align: center;
+    position: absolute;
+    top: 140px;
+    font-family: 'Lemon/Milk light';
+    text-shadow: 2px 2px 18px gray;
+}
+
+
+#titleAp{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    color: white;
+    text-align: center;
+    position: absolute;
+    top: 120px;
+    font-family: 'Lemon/Milk light';
+    text-shadow: 2px 2px 18px gray;
 }
 
 .compartimentos{
@@ -161,6 +192,12 @@ body {
 
 .caixa{
     margin:25px;
+}
+
+.caixa:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 #carouselExampleIndicators{
@@ -176,35 +213,26 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
-    height: 250px;
 }
 
 #conf{
-    width: 550px;
-    height: 230px;
-    background-color: white;
-    border-color: #003057;
+    background-color: rgba(255,255,255,0.50);
+    color: white;
     border-radius: 5px;
+    opacity: 100%;
     padding: 5px;
     display: flex;
-    font-size: 24px;
+    font-size: 30px;
     line-height: 32px;
-    color: #003057;
-    font-family: verdana;
+    font-family: 'Lemon/Milk light';
     align-items: center;
+    box-shadow: 10px 10px 30px -20px gray;
+    text-shadow: 2px 2px 18px gray;
 }
 
   .buttonMain{
-    border-radius: 05px;
-    width: 160px;   
-    height: 50px;
-    line-height: 30px;
-    background-color: white;
-    font-family:verdana;
-    font-size: 22px;
-    font-weight: bold;
-    color: #003057;
     margin: 0.3%;
+    z-index: 1;
 }
 
 .bodyCoreGer {
@@ -361,41 +389,63 @@ body {
 }
 
 #btns{
+    margin-left: -10px;
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
 #btncorreios{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_correios.png);
+    width: 330px;
+    height: 353px;
+    background-image: url(../assets/Correios.png);
     background-repeat: no-repeat;
     margin:0.5%
-
 }
+
+#btncorreios:focus, #btncorreios::-moz-focus-inner{
+    outline:none;
+    border:none;
+  }
+
+#btncorreios:active, #btnentregas:active, #btnreceber:active, #btngerenciar:active{
+    position:relative;
+    top:2px;
+    left:2px;
+    box-shadow:none;
+}
+
 #btnentregas{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_entregas.png);
+    width: 330px;
+    height: 353px;
+    background-image: url(../assets/Entregar.png);
     background-repeat: no-repeat;
     margin:0.5%
 }
 
 #btnreceber{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_receber.png);
+    width: 330px;
+    height: 353px;
+    background-image: url(../assets/Receber.png);
     background-repeat: no-repeat;
     margin:0.5%
 }
 
 #btngerenciar{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_gerenciar.png);
+    width: 255px;
+    height: 67px;
+    position: absolute;
+    top: 532px;
+    left: 755px;
+    background-image: url(../assets/Configurações.png);
     background-repeat: no-repeat;
     margin:0.5%
+}
+
+#btngerenciar:active{
+    position: absolute;
+    top: 534px;
+    left: 757px;
 }
 
 .bodyCore{
@@ -403,80 +453,106 @@ body {
     height: 600px;
 }
 
-#btnentregar{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_entregar.png);
-    background-repeat: no-repeat;
-    margin:0.5%
-}
 
 #btnlog{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_log.png);
+    width: 25%;
+    height: 353px;
+    background-image: url(../assets/Relatorios.png);
     background-repeat: no-repeat;
-    margin:0.5%
+}
+
+#btnlog:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 #btnsenha{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_senha.png);
+    width: 329px;
+    height: 353px;
+    background-image: url(../assets/Senha.png);
     background-repeat: no-repeat;
     margin:0.5%
+}
+
+#btnsenha:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 #btnQR{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_QR.png);
+    width: 329px;
+    height: 353px;
+    background-image: url(../assets/QR\ Code.png);
     background-repeat: no-repeat;
     margin:0.5%
+}
+
+#btnQR:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 #btneditar{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_editar.png);
+    width: 25%;
+    background-image: url(../assets/Usuários.png);
     background-repeat: no-repeat;
-    margin:0.5%
-
 }
+
+#btneditar:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
+}
+
 #btndata{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_data.png);
+    width: 25%;
+    background-image: url(../assets/Data.png);
     background-repeat: no-repeat;
-    margin:0.5%
+}
+
+#btndata:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 #btncompartimentos{
-    width: 225px;
-    height: 300px;
-    background-image: url(Btn_comp.png);
+    width: 25%;
+    background-image: url(../assets/Portas.png);
     background-repeat: no-repeat;
-    margin:0.5%
+}
+
+#btncompartimentos:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 #divcompAbrir{
     width: 250px;
     height: 250px;
-    background-color: white;
+    background-color: rgba(255,255,255,0.50);
     border-color: white;
     border-radius: 5px;
     padding: 5px;
     display: flex;
     font-size: 200px;
     line-height: 200px;
-    color: #003057;
+    color: white;
     font-family: verdana;
     align-items: center;
+    box-shadow: 15px 15px 30px -15px gray;
+    
 }
 
 #textcompAbrir{
     width: 250px;
     text-align: center;
+    font-family: 'Lemon/Milk light';
+    text-shadow: 2px 2px 18px gray;
 }
 
 #confirma{
@@ -506,8 +582,10 @@ body {
     width: 100%;
     color: white;
     text-align: center;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bold;
+    font-family: 'Lemon/Milk light';
+    text-shadow: 2px 2px 18px gray;
 }
 
 #quadro_comprovante{
@@ -520,12 +598,12 @@ body {
 #divComprovante{
     width: 650px;
     height: 270px;
-    background-color: white;
-    border-color: #003057;
-    border-style: solid;
-    color:#003057;
-    font-size: 28px;
+    background-color: rgba(255,255,255,0.50);
+    color:white;
+    font-size: 23px;
     line-height: 36px;
+    font-family: 'Lemon/Milk light';
+    text-shadow: 2px 2px 18px gray;
 }
 
 #clock_box{
@@ -555,7 +633,7 @@ body {
     border-color: #003057;
     border-width: 1px;
     font-size: 36px;
-    margin: 10%
+    margin: 10%;
 }
 
 .alertdiv{
@@ -628,18 +706,258 @@ body {
       }
 
       #clock{
-        opacity: 70%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 21px;
-        font-weight: bold;
-        background-color: white;
-        box-shadow: inset;
-        color:#003057;
+        font-size: 30px;
+        color:white;
         text-align:center;
         margin:5%;
-        width: 240px;
-        height: 28px;
-        box-shadow: 0 0 .3em gray, 0 0 .3em white;
+        width: auto;
+        position: relative;
+        bottom: 50px;
+        left: 25px;
+        text-shadow: 2px 2px 18px gray;
       }
+
+      #voltar,#btn_voltar{
+        background-image: url(../assets/Voltar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        right: 750px;
+    }
+
+    #voltar:active,#btn_voltar:active{
+        position: absolute;
+        top:527px;
+        right: 748px;
+    }
+
+    #confirmar{
+        background-image: url(../assets/Confirmar.png); 
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        left: 750px;
+    }
+
+    #confirmar:active{
+        position: absolute;
+        top:527px;
+        left:752px;
+    }
+
+    #btnencerrar,#btncancelar{
+        background-image: url(../assets/Cancelar.png); 
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        right: 750px;
+    }
+    
+    #btnencerrar:active,#btncancelar:active{
+        position: absolute;
+        top:527px;
+        right: 748px;
+    }
+
+    #encerrar{
+        background-image: url(../assets/Finalizar.png); 
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        left: 750px;
+    }
+    
+    #encerrar:active{
+        position: absolute;
+        top:527px;
+        left:752px;
+    }
+
+    #btncancelar1{
+        background-image: url(../assets/Cancelar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+    }
+
+    #btncancelar1:active{
+        position: relative;
+        top:3px;
+        left:2px;
+    }
+
+    #confirmar{
+        background-image: url(../assets/Confirmar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        right: 755px;
+    }
+
+    #finalizar{
+        background-image: url(../assets/Finalizar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        left: 750px;
+    }
+
+    #finalizar:active{
+        position: absolute;
+        top:527px;
+        left: 752px;
+    }
+
+    #cancelar{
+        background-image: url(../assets/Cancelar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+    }
+
+    #cancelar:active{
+        background-repeat: no-repeat;
+        position: relative;
+        top:3px;
+        left:2px;
+    }
+
+    #lupa{
+        background-image: url(../assets/Buscar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+    }
+
+    #lupa:active{
+        background-repeat: no-repeat;
+        position: relative;
+        top:3px;
+        left:2px;
+    }
+
+    #download{
+        background-image: url(../assets/Finalizar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        left: 750px;
+    }
+
+    #download:active{
+        position: absolute;
+        top:527px;
+        left: 752px;
+    }
+
+    #inserir{
+        background-image: url(../assets/Inserir.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+    }
+
+    #inserir:active{
+        background-repeat: no-repeat;
+        position: relative;
+        top:3px;
+        left:2px;
+    }
+
+    #locker{
+        background-image: url(../assets/Finalizar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        left: 750px;
+    }
+
+    #locker:active{
+        position: absolute;
+        top:527px;
+        left: 752px;
+    }
+
+    #ajustebtn{
+        background-image: url(../assets/Ajustar.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+    }
+
+    #ajustebtn:active{
+        background-repeat: no-repeat;
+        position: relative;
+        top:3px;
+        left:2px;
+    }
+
+    #ajustebtn_auto{
+        background-image: url(../assets/Automatico.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+        left: 750px;
+    }
+
+    #ajustebtn_auto:active{
+        position: absolute;
+        top:527px;
+        left: 752px;
+    }
+
+    #btn_inserir{
+        background-image: url(../assets/Inserir.png);
+        width: 275px;
+        height: 84px;
+        background-repeat: no-repeat;
+        position: absolute;
+        top:525px;
+    }
+
+    #btn_inserir:active{
+        background-repeat: no-repeat;
+        position: relative;
+        top:3px;
+        left:2px;
+    }
+
+    html, body {
+        overflow: hidden;
+       }
+
+       #prev,#next{
+        position: relative;
+        bottom: 50px;
+    }
