@@ -5,7 +5,7 @@ body {
 }
 
 .back{
-    background-image: url(../assets/Tela\ 2.png);
+    background-image: url(../assets/back_colorido.png);
     background-repeat: no-repeat;
     width: 1024px;
     height: 600px;
@@ -192,6 +192,11 @@ body {
 
 .caixa{
     margin:25px;
+}
+
+.caixa_esgotado{
+    margin:25px;
+    opacity: 50%;
 }
 
 .caixa:active{

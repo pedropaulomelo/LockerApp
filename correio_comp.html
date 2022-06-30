@@ -54,13 +54,13 @@ async function getComps(){
     if(retorno.length){
         $('#comp_push').append(`
         <div class="caixa" value="P">
-           <img src="assets/P.png" id="P" onclick="clickCaixa(this.id)">
+           <img src="assets/Correios/P_Correios.png" id="P" onclick="clickCaixa(this.id)">
        </div>
         `)
     } else {
         $('#comp_push').append(`
-        <div class="caixa" value="P">
-           <img src="css/indisp_caixa_p.png">
+        <div class="caixa_esgotado" value="P">
+           <img src="assets/Correios/P_Esgotado_Correios.png">
        </div>
         `)  
     }
@@ -73,13 +73,13 @@ async function getComps(){
     if(retorno.length){
         $('#comp_push').append(`
         <div class="caixa" value="M">
-           <img src="assets/M.png" id="M" onclick="clickCaixa(this.id)">
+           <img src="assets/Correios/M_Correios.png" id="M" onclick="clickCaixa(this.id)">
        </div>
         `)
     } else {
         $('#comp_push').append(`
-        <div class="caixa" value="M">
-           <img src="css/indisp_caixa_m.png">
+        <div class="caixa_esgotado" value="M">
+           <img src="assets/Correios/M_Esgotado_Correios.png">
        </div>
         `)  
     }
@@ -92,13 +92,13 @@ async function getComps(){
     if(retorno.length){
         $('#comp_push').append(`
         <div class="caixa" value="G">
-           <img src="assets/G.png" id="G" onclick="clickCaixa(this.id)">
+           <img src="assets/Correios/G_Correios.png" id="G" onclick="clickCaixa(this.id)">
        </div>
         `)
     } else {
         $('#comp_push').append(`
-        <div class="caixa" value="G">
-           <img src="css/indisp_caixa_g.png">
+        <div class="caixa_esgotado" value="G">
+           <img src="assets/Correios/G_Esgotado_Correios.png">
        </div>
         `)  
     }

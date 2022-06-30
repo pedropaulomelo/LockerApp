@@ -25,6 +25,8 @@
     "dotenv": "^16.0.1",
     "electron": "^19.0.3",
     "electron-better-ipc": "^2.0.1",
+    "electron-fetch": "^1.7.4",
+    "electron-main-fetch": "^1.0.0",
     "electron-reload": "^2.0.0-alpha.1",
     "express": "^4.18.1",
     "nedb": "^1.8.0",

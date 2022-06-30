@@ -89,7 +89,7 @@ body {
     width: 160px;   
     height: 50px;
     line-height: 30px;
-    background-color: rgba(0,48,87,0.85);
+    background-color: rgba(0,38,105,0.88);
     font-size: 22px;
     font-weight: bold;
     color: white;    
@@ -168,6 +168,12 @@ text-align: center;
     margin:25px;
 }
 
+.caixa_esgotado{
+    margin:25px;
+    opacity: 80%;
+}
+
+
 .caixa:active{
     position: relative;
     top: 2px;
@@ -235,7 +241,7 @@ text-align: center;
 #btnentregar{
     width: 329px;
     height: 353px;
-    background-image: url(../assets/Entregar.png);
+    background-image: url(../assets/Correios/Entregar_Correios.png);
     background-repeat: no-repeat;
     margin: 0.5%;
 }
@@ -247,9 +253,9 @@ left: 2px;
 }
 
 #btnlog{
-    width: 275px;
+    width: 329px;
     height: 353px;
-    background-image: url(../assets/Relatorios.png);
+    background-image: url(../assets/Correios/Relatorio_Correios.png);
     background-repeat: no-repeat;
     margin-top: 150px;
     margin-left: 8px;
@@ -382,11 +388,12 @@ left: 2px;
         position: relative;
         bottom: 50px;
         left: 25px;
+        font-family: 'Lemon/Milk light';
         text-shadow: 2px 2px 18px gray;
     }
 
     #voltar,#btn_voltar{
-        background-image: url(../assets/Voltar.png);
+        background-image: url(../assets/Correios/Voltar_Correios.png);
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -402,7 +409,7 @@ left: 2px;
     }
 
     #confirmar{
-        background-image: url(../assets/Confirmar.png); 
+        background-image: url(../assets/Correios/Confirmar_Correios.png); 
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -418,7 +425,7 @@ left: 2px;
     }
 
     #btnencerrar,#btncancelar{
-        background-image: url(../assets/Cancelar.png); 
+        background-image: url(../assets/Correios/Cancelar_Correios.png); 
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -434,7 +441,7 @@ left: 2px;
     }
 
     #btncancelar1{
-        background-image: url(../assets/Cancelar.png);
+        background-image: url(../assets/Correios/Cancelar_Correios.png);
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -449,7 +456,7 @@ left: 2px;
     }
 
     #confirmar{
-        background-image: url(../assets/Confirmar.png);
+        background-image: url(../assets/Correios/Confirmar_Correios.png);
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -459,7 +466,7 @@ left: 2px;
     }
 
     #finalizar{
-        background-image: url(../assets/Finalizar.png);
+        background-image: url(../assets/Correios/Finalizar_Correios.png);
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -475,7 +482,7 @@ left: 2px;
     }
 
     #cancelar{
-        background-image: url(../assets/Cancelar.png);
+        background-image: url(../assets/Correios/Cancelar_Correios.png);
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -491,7 +498,7 @@ left: 2px;
     }
 
     #lupa{
-        background-image: url(../assets/Buscar.png);
+        background-image: url(../assets/Correios/Buscar_Correios.png);
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;
@@ -507,7 +514,7 @@ left: 2px;
     }
 
     #download{
-        background-image: url(../assets/Download.png);
+        background-image: url(../assets/Correios/Download_Correios.png);
         width: 275px;
         height: 84px;
         background-repeat: no-repeat;

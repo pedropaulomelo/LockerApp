@@ -94,17 +94,9 @@ $("#sim").click(function () {
 getData(valueCompSize);
 
 async function getData(size) {
-    const data_send = {size,sessionId,token,ip};
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data_send)
-    };
-
-const response = await fetch(server+'/db_comp/disp',options);
-const data = await response.json();
+ipcRenderer.send('get_compDisp',size);
+ipcRenderer.on(`get_compDisp${size}_response`,(event,response)=>{
+var data = JSON.parse(response);
 console.log(data)
 const length = data.length
 var array = [];
@@ -118,7 +110,7 @@ const random = Math.floor(Math.random() * array.length);
 var compAbrir = array[random];
 console.log(compAbrir)
 localStorage.setItem("varcompAbrir",compAbrir);
-
+})
 }
 
 createDiv();

@@ -70,15 +70,20 @@ const {ipcMain} = require('electron');
 var  Datastore = require('nedb');
 
 require('dotenv/config');
+
+const fetch = require('electron-fetch').default
+
 //var LocalStorage = require('node-localstorage').LocalStorage;
 
 //localStorage = new LocalStorage('./localStorage');
 
-//const {SerialPort} = require("serialport");
+const {SerialPort} = require("serialport");
 //const { ReadlineParser } = require('@serialport/parser-readline');
-//const fs = require('fs');
+const fs = require('fs');
 
-//const port = new SerialPort({path: "COM9", baudRate: 9600});
+const port_str = process.env.PORT;
+
+const port = new SerialPort({path: port_str, baudRate: 9600});
 //const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 
 
@@ -89,6 +94,7 @@ const db_entregas = new Datastore('db_entregas.db');
 const db_ap = new Datastore('db_ap.db');
 const db_session = new Datastore('db_session.db');
 const db_users = new Datastore('db_users.db');
+const db_changes = new Datastore('db_changes.db');
 
 db_comp.loadDatabase();
 db_locker.loadDatabase();
@@ -97,9 +103,7 @@ db_entregas.loadDatabase();
 db_ap.loadDatabase();
 db_session.loadDatabase();
 db_users.loadDatabase();
-
-
-
+db_changes.loadDatabase();
 
 
 time = Date.now();
@@ -137,11 +141,115 @@ function gerarToken(length) {
   }
   return token
 }
+//----------------------------------------------------------------------------------------------------------------
+var sessionId = false;
+var token = false;
+var server = process.env.SERVER;
+
+var locker_cod = process.env.LOCKER_COD;
+var locker_key = process.env.LOCKER_KEY;
+console.log(`Locker: ${locker_cod}`)
+console.log(`Locker key: ${locker_key}`)
+console.log(`Server adress: ${server}`)
+//----------------------------------------------------------------------------------------------------------------
+
+async function authLocker(){
+console.log("Iniciando auth function")
+  const data = {locker_cod,locker_key};
+
+  console.log(data)
+
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+
+  const response = await fetch(server+'/auth/locker',options);
+  const retorno = await response.json();
+  console.log(retorno);
+  
+  if(!retorno){
+      sessionId = false;
+      token = false; 
+      console.log("not authenticated")
+      return
+  }else{
+      sessionId = retorno.sessionId;
+      token = retorno.token;
+      console.log("Authentication complete")
+      console.log('sessionId: '+sessionId+' - token: '+token)
+  }
+}
 
 
+async function authLocker_check(){
+console.log("Checking session status")
+  const data = {sessionId,token};
+
+  const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+  console.log("credentials to send...")  
+  console.log(data)
+
+  const response = await fetch(server+'/auth_check/locker',options);
+  const retorno = await response.json();
+
+  console.log("Session status: "+retorno)
+
+  if(!retorno){
+    console.log("Session false! Calling auth function...")
+      await authLocker();
+  }else if(retorno){
+    console.log("Auth OK")
+      return
+  }
+}
 
 
+authLocker_check();
 
+setInterval(async function(){
+  await authLocker_check();
+}
+,60000)
+
+authLocker_check();
+
+setInterval(async function(){
+  await sync();
+}
+,60000)
+
+async function sync(){
+  console.log("Sincronizando com o servidor")
+  db_changes.find({}, async(err,data) => {
+    console.log(data)
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    };
+
+  const response = await fetch(server+'/sync',options);
+  const retorno = await response.json()
+  console.log(retorno)
+  
+  db_changes.remove({}, { multi: true }, function (err, numRemoved) {
+    console.log(numRemoved);
+  });
+
+  })
+  }
 
 ipcMain.on('get_apartamentos',(event,request)=>{
   db_ap.find({}).sort({ ap: 1 }).exec(function (err, data) {
@@ -175,7 +283,7 @@ ipcMain.on('get_lockerAlterar', (event, data) => {
 })
 
 ipcMain.on('get_open',(event,comp)=>{
-  //port.write("o:"+comp);
+  port.write("o:"+comp);
   console.log("open:"+comp);
   event.reply(`get_open_response`,true)
 })
@@ -195,8 +303,31 @@ ipcMain.on('get_entrega',(event, request) => {
   data.pass = pass;
   data.qrCode = qrCode;
   data.sit = "";
+  data.tipo = 'outros';
   db_entregas.insert(data);
+
+  //-------------------------------------------------
+  var db = 'db_entregas';
+  var action = 'insert';
+  var metadata = {locker_cod,db,action};
+  const status = true;
+  var data_changes = {status,metadata,data}
+  db_changes.insert(data_changes)
+  //-------------------------------------------------
+
   db_comp.update({comp:dataComp},{$set:{sit:'OCUPADO',entregaId:entregaId,date:timestamp,ap:dataAp}},{multi:true});
+
+    //-------------------------------------------------
+    db_comp.find({comp:dataComp}, (err, data_comp) => {
+      var db = 'db_comp';
+      var action = 'update';
+      var metadata = {locker_cod,db,action}
+      const data = data_comp[0];
+      const status = true;
+      var data_changes = {status,metadata,data}
+      db_changes.insert(data_changes)
+    })
+    //-------------------------------------------------
 
   db_ap.find({ap:dataAp}).sort({ comp: 1 }).exec(async function (err, retorno) {
   var number = retorno[0].tel;
@@ -234,8 +365,30 @@ ipcMain.on('get_entregaCorreios',(event, request) => {
   data.pass = pass;
   data.qrCode = qrCode;
   data.sit = "";
-  db_correios.insert(data);
+  data.tipo = 'correios'
+  db_entregas.insert(data);
+
+    //-------------------------------------------------
+    var db = 'db_entregas';
+    var action = 'insert';
+    var metadata = {locker_cod,db,action}
+    var data_changes = {metadata,data}
+    db_changes.insert(data_changes)
+    //-------------------------------------------------
+
   db_comp.update({comp:dataComp},{$set:{sit:'OCUPADO',entregaId:entregaId,date:timestamp,ap:dataAp}},{multi:true});
+
+      //-------------------------------------------------
+      db_comp.find({comp:dataComp}, (err, data_comp) => {
+        var db = 'db_comp';
+        var action = 'update';
+        var metadata = {locker_cod,db,action}
+        const data = data_comp[0]
+        const status = true;
+        var data_changes = {status,metadata,data}
+        db_changes.insert(data_changes)
+      })
+      //-------------------------------------------------
 
   db_ap.find({ap:dataAp}).sort({ comp: 1 }).exec(async function (err, retorno) {
   var number = retorno[0].tel;
@@ -257,40 +410,42 @@ ipcMain.on('get_entregaCorreios',(event, request) => {
 })
 
 ipcMain.on('get_pass', (event, pass) => {
-  db_correios.find({"pass":pass}, (err, retorno) => {
-    if(retorno.length>0){
-      var entregaId = retorno[0].entregaId;
-      const timestamp = clocktime;
-      db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:""}},{multi:false});
-      db_correios.update({entregaId:entregaId},{$set:{sit:timestamp}},{multi:false});
-      event.reply('get_pass_response', retorno);  
-    } else {
       db_entregas.find({"pass":pass}, (err, retorno) => {
         var entregaId = retorno[0].entregaId;
         const timestamp = clocktime;
-        db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:""}},{multi:false});
+        db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:"",pointer:true}},{multi:false});
+
+    //-------------------------------------------------
+    db_comp.find({pointer:true}, (err, data_comp) => {
+      var db = 'db_comp';
+      var action = 'update';
+      var metadata = {locker_cod,db,action}
+      const data = data_comp[0];
+      var data_changes = {metadata,data};
+      db_changes.insert(data_changes);
+    })
+    //-------------------------------------------------
+    db_comp.update({pointer:true},{$set:{pointer:false}},{multi:true});
+
         db_entregas.update({entregaId:entregaId},{$set:{sit:timestamp}},{multi:false});
+
+    //-------------------------------------------------
+    db_entregas.find({entregaId:entregaId}, (err, data_entregas) => {
+      var db = 'db_entregas';
+      var action = 'update';
+      var metadata = {locker_cod,db,action}
+      const data = data_entregas[0]
+      const status = true;
+      var data_changes = {status,metadata,data}
+      db_changes.insert(data_changes)
+    })
+    //-------------------------------------------------
+
         event.reply('get_pass_response', retorno);
     });
-  };
-});
 })
 
 ipcMain.on('get_qr', (event, qrCode) => {
-  db_correios.find({"qrCode":qrCode}, (err, retorno) => {
-    if(retorno.length>0){
-      var sit = retorno[0].sit;
-      if(sit!=""){
-        var erro = "";
-        event.reply('get_qr_response', erro)
-      } else {
-        var entregaId = retorno[0].entregaId;
-        const timestamp = clocktime;
-        db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:""}},{multi:false});
-        db_correios.update({entregaId:entregaId},{$set:{sit:timestamp}},{multi:false});
-        event.reply('get_qr_response', retorno)  
-      }
-    } else {
       db_entregas.find({"qrCode":qrCode}, (err, retorno) => { 
         if(retorno.length>0){
           var sit = retorno[0].sit;
@@ -300,14 +455,38 @@ ipcMain.on('get_qr', (event, qrCode) => {
           } else {
             var entregaId = retorno[0].entregaId;
             const timestamp = clocktime;
-            db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:""}},{multi:false});
+            db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:"",pointer:true}},{multi:false});
+
+            //-------------------------------------------------
+            db_comp.find({pointer:true}, (err, data_comp) => {
+              var db = 'db_comp';
+              var action = 'update';
+              var metadata = {locker_cod,db,action}
+              const data = data_comp[0];
+              var data_changes = {metadata,data};
+              db_changes.insert(data_changes);
+            })
+            //-------------------------------------------------
+            db_comp.update({pointer:true},{$set:{pointer:false}},{multi:true});
+
             db_entregas.update({entregaId:entregaId},{$set:{sit:timestamp}},{multi:false});
+
+    //-------------------------------------------------
+    db_entregas.find({entregaId:entregaId}, (err, data_entregas) => {
+      var db = 'db_entregas';
+      var action = 'update';
+      var metadata = {locker_cod,db,action}
+      const data = data_entregas[0]
+      const status = true;
+      var data_changes = {status,metadata,data}
+      db_changes.insert(data_changes)
+    })
+    //-------------------------------------------------
+
             event.reply('get_qr_response', retorno)
           }
     }
   })
-  }
-})
 })
 
 ipcMain.on('get_user', (event, data) => {
@@ -362,10 +541,31 @@ ipcMain.on('get_editAp', (event, data) => {
   const morador = data.morador;
   const tel = data.tel;
   db_ap.update({ap:ap},{$set:{morador:morador,tel:tel}},{multi:false});
+
+      //-------------------------------------------------
+      db_ap.find({ap:ap}, (err, data_ap) => {
+        var db = 'db_ap';
+        var action = 'update';
+        var metadata = {locker_cod,db,action}
+        const data = data_ap[0];
+        var data_changes = {metadata,data};
+        db_changes.insert(data_changes);
+      })
+      //-------------------------------------------------
 })
 
 ipcMain.on('get_deleteAp', (event, ap) => {
   db_ap.remove({ap:ap},(err, data) => {});
+
+        //-------------------------------------------------
+          var db = 'db_ap';
+          var action = 'delete';
+          var metadata = {locker_cod,db,action}
+          const data = ap;
+          const status = true;
+          var data_changes = {status,metadata,data};
+          db_changes.insert(data_changes);
+        //-------------------------------------------------
 })
 
 ipcMain.on('get_clockAdjust', (event, newtime) => {
@@ -384,9 +584,35 @@ ipcMain.on('get_compartimentos', (event, get) => {
 
 ipcMain.on('get_receberAdm', (event, entregaId) => {
   const timestamp = clocktime;
-  db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:""}},{multi:false});
-  db_correios.update({entregaId:entregaId},{$set:{sit:timestamp}},{multi:false});
+  db_comp.update({entregaId:entregaId},{$set:{sit:'DISPONÍVEL',entregaId:"",date:"0",ap:"",pointer:true}},{multi:false});
+
+    //-------------------------------------------------
+    db_comp.find({pointer:true}, (err, data_comp) => {
+      var db = 'db_comp';
+      var action = 'update';
+      var metadata = {locker_cod,db,action}
+      const data = data_comp[0];
+      var data_changes = {metadata,data};
+      db_changes.insert(data_changes);
+    })
+    //-------------------------------------------------
+
+    db_comp.update({pointer:true},{$set:{pointer:false}},{multi:true});
+
   db_entregas.update({entregaId:entregaId},{$set:{sit:timestamp}},{multi:false});
+
+    //-------------------------------------------------
+    db_entregas.find({entregaId:entregaId}, (err, data_entregas) => {
+      var db = 'db_entregas';
+      var action = 'update';
+      var metadata = {locker_cod,db,action}
+      const data = data_entregas[0]
+      const status = true;
+      var data_changes = {status,metadata,data}
+      db_changes.insert(data_changes)
+    })
+    //-------------------------------------------------
+
 })
 
 ipcMain.on('get_lock', (event, data) => {
@@ -399,6 +625,18 @@ ipcMain.on('get_lock', (event, data) => {
     sit = "DISPONÍVEL"
   }
   db_comp.update({comp:comp},{$set:{sit:sit}},{multi:false}); 
+
+  //-------------------------------------------------
+  db_comp.find({comp:comp}, (err, data_comp) => {
+    var db = 'db_comp';
+    var action = 'update';
+    var metadata = {locker_cod,db,action}
+    const data = data_comp[0];
+    const status = true;
+    var data_changes = {status,metadata,data};
+    db_changes.insert(data_changes);
+  })
+  //-------------------------------------------------
 })
 
 ipcMain.on('get_compInsert', (event, size) => {
@@ -410,6 +648,15 @@ ipcMain.on('get_compInsert', (event, size) => {
     var ap= "";
     var data = {comp,size,sit,entregaId,date,ap}
     db_comp.insert(data);
+
+  //-------------------------------------------------
+    var db = 'db_comp';
+    var action = 'insert';
+    var metadata = {locker_cod,db,action}
+    const status = true;
+    var data_changes = {status,metadata,data};
+    db_changes.insert(data_changes);
+  //-------------------------------------------------
   });
 })
 
@@ -421,7 +668,7 @@ ipcMain.on('get_log', (event, data_log) => {
     var data = [];
   db_entregas.find({}).sort({ timestamp: 1 }).exec(function (err, data_entregas) {
     for(i=0;i<data_entregas.length;i++){
-      var tipo = "outros"
+      var tipo = data_entregas[i].tipo;
       var entregaId = data_entregas[i].entregaId;
       var ap = data_entregas[i].ap;
       var comp = data_entregas[i].comp
@@ -429,20 +676,8 @@ ipcMain.on('get_log', (event, data_log) => {
       var timestamp = data_entregas[i].timestamp;
       var row = {tipo,entregaId,ap,comp,sit,timestamp};
       data.push(row);
-    }
-    db_correios.find({}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
-      for(i=0;i<data_correios.length;i++){
-        var tipo = "correios"
-        var entregaId = data_correios[i].entregaId;
-        var ap = data_correios[i].ap;
-        var comp = data_correios[i].comp
-        var sit = data_correios[i].sit;
-        var timestamp = data_correios[i].timestamp;
-        var row = {tipo,entregaId,ap,comp,sit,timestamp};
-        data.push(row);
-      }
       event.reply('get_log_response', data)
-    });
+    }
   });
   }
 
@@ -452,7 +687,7 @@ ipcMain.on('get_log', (event, data_log) => {
   var ap = data_log.data.ap;
   db_entregas.find({ap:ap}).sort({ timestamp: 1 }).exec(function (err, data_entregas) {
     for(i=0;i<data_entregas.length;i++){
-      var tipo = "outros"
+      var tipo = data_entregas[i].tipo;
       var entregaId = data_entregas[i].entregaId;
       var ap = data_entregas[i].ap;
       var comp = data_entregas[i].comp
@@ -460,20 +695,8 @@ ipcMain.on('get_log', (event, data_log) => {
       var timestamp = data_entregas[i].timestamp;
       var row = {tipo,entregaId,ap,comp,sit,timestamp};
       data.push(row);
-    }
-    db_correios.find({ap:ap}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
-      for(i=0;i<data_correios.length;i++){
-        var tipo = "correios"
-        var entregaId = data_correios[i].entregaId;
-        var ap = data_correios[i].ap;
-        var comp = data_correios[i].comp
-        var sit = data_correios[i].sit;
-        var timestamp = data_correios[i].timestamp;
-        var row = {tipo,entregaId,ap,comp,sit,timestamp};
-        data.push(row);
-      }
       event.reply('get_log_response', data);
-    });
+    }
   });
   }
 
@@ -484,7 +707,7 @@ ipcMain.on('get_log', (event, data_log) => {
     var data_to = data_log.data.data_to;
     db_entregas.find({timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_entregas) {
       for(i=0;i<data_entregas.length;i++){
-        var tipo = "outros"
+        var tipo = data_entregas[i].tipo;
         var entregaId = data_entregas[i].entregaId;
         var ap = data_entregas[i].ap;
         var comp = data_entregas[i].comp
@@ -492,20 +715,8 @@ ipcMain.on('get_log', (event, data_log) => {
         var timestamp = data_entregas[i].timestamp;
         var row = {tipo,entregaId,ap,comp,sit,timestamp};
         data.push(row);
-      }
-      db_correios.find({timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
-        for(i=0;i<data_correios.length;i++){
-          var tipo = "correios"
-          var entregaId = data_correios[i].entregaId;
-          var ap = data_correios[i].ap;
-          var comp = data_correios[i].comp
-          var sit = data_correios[i].sit;
-          var timestamp = data_correios[i].timestamp;
-          var row = {tipo,entregaId,ap,comp,sit,timestamp};
-          data.push(row);
-        }
         event.reply('get_log_response', data);
-      });
+      }
     });
   }
   
@@ -517,7 +728,7 @@ ipcMain.on('get_log', (event, data_log) => {
   var data_to = data_log.data.data_to;
   db_entregas.find({ap:ap, timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_entregas) {
     for(i=0;i<data_entregas.length;i++){
-      var tipo = "outros"
+      var tipo = data_entregas[i].tipo;
       var entregaId = data_entregas[i].entregaId;
       var ap = data_entregas[i].ap;
       var comp = data_entregas[i].comp
@@ -525,20 +736,8 @@ ipcMain.on('get_log', (event, data_log) => {
       var timestamp = data_entregas[i].timestamp;
       var row = {tipo,entregaId,ap,comp,sit,timestamp};
       data.push(row);
-    }
-    db_correios.find({ap:ap, timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
-      for(i=0;i<data_correios.length;i++){
-        var tipo = "correios"
-        var entregaId = data_correios[i].entregaId;
-        var ap = data_correios[i].ap;
-        var comp = data_correios[i].comp
-        var sit = data_correios[i].sit;
-        var timestamp = data_correios[i].timestamp;
-        var row = {tipo,entregaId,ap,comp,sit,timestamp};
-        data.push(row);
-      }
       event.reply('get_log_response', data);
-    });
+    }
   });
   }
 })
@@ -550,7 +749,7 @@ ipcMain.on('get_logCorreios', (event, data_log) => {
 
   if(route==='/log/correios'){
     var data = [];
-    db_correios.find({}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
+    db_entregas.find({tipo:'correios'}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
       for(i=0;i<data_correios.length;i++){
         var credencial = data_correios[i].credencial;
         var entregaId = data_correios[i].entregaId;
@@ -569,7 +768,7 @@ ipcMain.on('get_logCorreios', (event, data_log) => {
   if(route==='/log/correios/ap'){
     var data = [];
   var ap = data_log.data.ap;
-    db_correios.find({ap:ap}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
+    db_entregas.find({tipo:'correios',ap:ap}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
       for(i=0;i<data_correios.length;i++){
         var credencial = data_correios[i].credencial;
         var entregaId = data_correios[i].entregaId;
@@ -589,7 +788,7 @@ ipcMain.on('get_logCorreios', (event, data_log) => {
     var data = [];
     var data_from = data_log.data.data_from;
     var data_to = data_log.data.data_to;
-      db_correios.find({timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
+      db_entregas.find({tipo:'correios', timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
         for(i=0;i<data_correios.length;i++){
           var credencial = data_correios[i].credencial;
           var entregaId = data_correios[i].entregaId;
@@ -610,7 +809,7 @@ ipcMain.on('get_logCorreios', (event, data_log) => {
   var ap = data_log.data.ap;
   var data_from = data_log.data.data_from;
   var data_to = data_log.data.data_to;
-    db_correios.find({ap:ap, timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
+    db_entregas.find({tipo:'correios', ap:ap, timestamp:{$gte:data_from,$lte:data_to}}).sort({ timestamp: 1 }).exec(function (err, data_correios) {
       for(i=0;i<data_correios.length;i++){
         var credencial = data_correios[i].credencial;
         var entregaId = data_correios[i].entregaId;
